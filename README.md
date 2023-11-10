@@ -16,3 +16,10 @@
 个人独立完成
 
 把movie数据库的几个表放进去。
+
+## 参考
+
+[RUCstore](https://git.ruc.edu.cn/gengdy/rustore)
+
+[Flask 入门教程 3.0](https://helloflask.com/book/3/)
+
