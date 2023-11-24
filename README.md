@@ -26,3 +26,8 @@
 ## 学习过程
 
 https://github.com/Silverwolf-x/study-flask.git
+
+## 构建历史
+
+20231124
+重构项目文件夹结构，编辑初始化数据库相关内容；暂定实现的内容
