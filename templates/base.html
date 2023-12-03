@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cn">
 
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,7 @@
     <meta name="keywords" content="">
     <meta name="description" content="">
     <!-- 加载bootstrap的css -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="/static/bootstrap5/css/bootstrap.min.css">
     <!--  块标题  -->
     <title>
@@ -18,31 +19,47 @@
 
 <body>
     <br>
-    <!--块导航栏-->
-    {% block navbar %}
     <div class="container">
+        <h1>
+            <img class=" rounded mx-auto" style="width: 10%;vertical-align:middle;"
+                src="{{ url_for('static', filename='万叶.jpg') }}">
+            电影管理系统
+        </h1>
+    </div>
+    <br>
+    <div class="container">
+        <!--块导航栏-->
+        <!-- 通过block更换活跃状态 -->
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">
-                    Movie Info</a>
+                {% block navindex %}
+                <a class="nav-link" aria-current="page" href="{{ url_for('index')}}">主页</a>
+                {% endblock %}
             </li>
             <li class="nav-item dropdown">
+                {% block navmovie %}
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                    aria-expanded="false">Movie Info</a>
+                    aria-expanded="false">电影信息</a>
+                {% endblock %}
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">所有条目</a></li>
-                    <li><a class="dropdown-item" href="#">搜索条目</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('movie')}}">所有条目</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('movie_search')}}">搜索条目</a></li>
                 </ul>
             </li>
+            <li class="nav-item dropdown">
+                {% block navactor %}
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                    aria-expanded="false">演员信息</a>
+                {% endblock %}
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('actor')}}">所有条目</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('actor_search')}}">搜索条目</a></li>
+                </ul>
             <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">未开放功能</a>
             </li>
         </ul>
     </div>
-    {% endblock %}
 
     <!-- 插入提示框 -->
     <!-- 
@@ -78,14 +95,15 @@
         {% endblock %}
     </div>
     <!--块底部内容-->
-
-    <small>
-        &copy; 2023
-        <a href="https://github.com/Silverwolf-x/movie-management-system">Silverwolf-x
-            Project</a>
-    </small>
-
-
+    <br>
+    <div style="text-align: center;">
+        <small>
+            Copyright &copy; 2023
+            <a href="https://github.com/Silverwolf-x/movie-management-system">Silverwolf-x
+                Project</a> by hyx
+        </small>
+    </div>
+    <br>
     <!--加载bootstrap的JavaScript资源-->
     <script src="/static/bootstrap5/js/bootstrap.bundle.min.js"></script>
 </body>

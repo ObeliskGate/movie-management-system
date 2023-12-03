@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Actor Info{% endblock %}
+
+{% block navactor %}
+<a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+    aria-expanded="false">演员信息</a>
+{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="border-dark">
+            <tr>
+                {% for column in actors_col %}
+                <th scope="col">{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <form method="post">
+                <tr>
+                    {{ form.csrf_token }}{{ form.hidden_tag() }}
+                    <td scope="row">{{ form.actor_id(class="form-control", placeholder="输入演员编号") }}</td>
+                    <td>{{ form.actor_name(class="form-control", placeholder="输入姓名") }}</td>
+                    <td>{{ form.gender(class="form-control", placeholder="输入性别") }}</td>
+                    <td>{{ form.country(class="form-control", placeholder="输入国籍") }}</td>
+                    <td><button type="submit" class=" btn btn-outline-primary btn-sm text-nowrap">添加</button></td>
+                </tr>
+            </form>
+            {% for actor in actors %}
+            <tr>
+                <td scope="row">{{ actor.actor_id }}</td>
+                <td>{{ actor.actor_name }}</td>
+                <td>{{ actor.gender }}</td>
+                <td>{{ actor.country }}</td>
+                <td>
+                    <!-- 编辑 -->
+                    <div class="d-grid gap-1 d-md-flex justify-content-md-end">
+                        <a type="button" class="btn btn-outline-success btn-sm text-nowrap"
+                            href="{{ url_for('actor_edit', actor_id=actor.actor_id) }}">编辑</a>
+                        <!-- 删除 -->
+                        <form method="post" action="{{ url_for('actor_delete', actor_id=actor.actor_id) }}"
+                            onsubmit="return confirm('确认删除吗？这将对应删除actor_actor_relation同一演员信息')">
+                            <button type="submit" class=" btn btn-outline-danger btn-sm text-nowrap">删除</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

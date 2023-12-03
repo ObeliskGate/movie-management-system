@@ -34,3 +34,9 @@ https://github.com/Silverwolf-x/study-flask.git
 
 20231202
 基于flask-Bootstrap5完全重写前端，重写后端框架。现已做到查询、新建、删除功能
+
+20231203
+
+- 正式发布version-alpha
+
+实现movie_info和actor_info两个表分别的查询、编辑、新建、删除

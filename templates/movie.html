@@ -1,28 +1,10 @@
 {% extends "base.html" %}
 
-{% block navbar %}
-<div class="container">
-    <ul class="nav nav-pills">
-        <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{{ url_for('index')}}">
-                主页</a>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
-                aria-expanded="false">电影信息</a>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url_for('movie')}}">所有条目</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('movie_search')}}">搜索条目</a></li>
-            </ul>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
-    </ul>
-</div>
+{% block title %}Movie Info{% endblock %}
+
+{% block navmovie %}
+<a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+    aria-expanded="false">电影信息</a>
 {% endblock %}
 
 {% block content %}
