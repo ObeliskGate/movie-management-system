@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Movie{% endblock %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Edit Movie</h2>
+    <!-- align-items-center -->
+    <form method="post" class="row g-3">
+        {{ form.csrf_token }}
+        {{ form.hidden_tag() }}
+
+        <div class="col-md-6">
+            <label class="form-label" for="movie_id">Movie ID</label>
+            <input class="form-control" type="text" placeholder="{{ movie.movie_id }}" disabled readonly>
+        </div>
+
+        <div class="col-md-6">
+            {{ form.movie_name.label(class="form-label") }}
+            {{ form.movie_name(class="form-control", placeholder="输入电影名称") }}
+            <!-- 等价于用falsk_wtf简化了代码编写。详情在网页——右键——检查——源代码——页面，找到实际执行时的代码
+                <label class="form-label" for="movie_name">Movie Name</label> 
+                <input class="form-control" id="movie_name" maxlength="20" name="movie_name" placeholder="Enter release date" required type="text" value="战狼2">
+            -->
+        </div>
+        <div class="col-md-3">
+            {{ form.release_date.label(class="form-label")}}
+            {{ form.release_date(class="form-control", placeholder="输入发行日期") }}
+        </div>
+
+        <!-- 自动根据release_date填写 -->
+        <div class="col-md-3">
+            <label class="form-label">Year</label>
+            <input class="form-control" disabled readonly>
+            <span class="form-text">自动读取Release Date</span>
+        </div>
+
+        <div class="col-md-3">
+            {{ form.country.label(class="form-label") }}
+            {{ form.country(class="form-control", placeholder="输入制片国家") }}
+        </div>
+
+        <div class="col-md-3">
+            {{ form.type.label(class="form-label") }}
+            {{ form.type(class="form-control", placeholder="输入电影类型") }}
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">提交</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

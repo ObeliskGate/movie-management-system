@@ -31,3 +31,6 @@ https://github.com/Silverwolf-x/study-flask.git
 
 20231124
 重构项目文件夹结构，编辑初始化数据库相关内容；暂定实现的内容
+
+20231202
+基于flask-Bootstrap5完全重写前端，重写后端框架。现已做到查询、新建、删除功能
