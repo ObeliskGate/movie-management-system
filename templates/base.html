@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cn">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -11,58 +11,38 @@
     <link rel="stylesheet" type="text/css" href="/static/bootstrap5/css/bootstrap.min.css">
     <!--  块标题  -->
     <title>
-        {% block mytitle %}
+        {% block title %}
         首页
         {% endblock %}</title>
-
 </head>
 
 <body>
-
+    <br>
     <!--块导航栏-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li>
+    {% block navbar %}
+    <div class="container">
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">
+                    Movie Info</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                    aria-expanded="false">Movie Info</a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">所有条目</a></li>
+                    <li><a class="dropdown-item" href="#">搜索条目</a></li>
                 </ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
-        </div>
-    </nav>
-    <!-- {% block navbar %}
-    {% endblock %} -->
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
+        </ul>
+    </div>
+    {% endblock %}
 
     <!-- 插入提示框 -->
     <!-- 
@@ -75,19 +55,16 @@
         -注意：如果flash()没有传入第二个参数进行分类，默认分类是 'message'
     
     -->
+    <br>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% for category, message in messages %}
     {% if category == "success" %}
-    <div class="container alert alert-success alert-dismissible fade show" role="alert">
-        <h4 class="alert-heading">Success</h4>
-        <hr>
+    <div class="mx-auto alert alert-success alert-dismissible fade show" style="width:65%" role="alert">
         {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% elif category == "warning" %}
-    <div class="container alert alert-warning alert-dismissible fade show" role="alert">
-        <h4 class="alert-heading">Warning</h4>
-        <hr>
+    <div class="mx-auto alert alert-success alert-dismissible fade show" style="width:65%" role="alert">
         {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block navbar %}
+<div class="container">
+    <ul class="nav nav-pills">
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{{ url_for('index')}}">
+                主页</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+                aria-expanded="false">电影信息</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('movie')}}">所有条目</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('movie_search')}}">搜索条目</a></li>
+            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="border-dark">
+            <tr>
+                {% for column in movies_col %}
+                <th scope="col">{{ column }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <form method="post">
+                <tr>
+                    {{ form.csrf_token }}{{ form.hidden_tag() }}
+                    <td scope="row">{{ form.movie_id(class="form-control", placeholder="输入电影编号") }}</td>
+                    <td>{{ form.movie_name(class="form-control", placeholder="输入电影名称") }}</td>
+                    <td>{{ form.release_date(class="form-control", placeholder="输入发行日期") }}</td>
+                    <td>{{ form.country(class="form-control", placeholder="输入制片国家") }}</td>
+                    <td>{{ form.type(class="form-control", placeholder="输入电影类型") }}
+                    <td><input class="form-control" placeholder="自动读取" disabled readonly></td>
+                    <td><button type="submit" class=" btn btn-outline-primary btn-sm text-nowrap">添加</button></td>
+                </tr>
+            </form>
+            {% for movie in movies %}
+            <tr>
+                <td scope="row">{{ movie.movie_id }}</td>
+                <td>{{ movie.movie_name }}</td>
+                <td>{{ movie.release_date }}</td>
+                <td>{{ movie.country }}</td>
+                <td>{{ movie.type }}</td>
+                <td>{{ movie.year }}</td>
+                <td>
+                    <!-- 编辑 -->
+                    <div class="d-grid gap-1 d-md-flex justify-content-md-end">
+                        <a type="button" class="btn btn-outline-success btn-sm text-nowrap"
+                            href="{{ url_for('movie_edit', movie_id=movie.movie_id) }}">编辑</a>
+                        <!-- 删除 -->
+                        <form method="post" action="{{ url_for('movie_delete', movie_id=movie.movie_id) }}"
+                            onsubmit="return confirm('确认删除吗？这将对应删除movie_actor_relation同一电影信息')">
+                            <button type="submit" class=" btn btn-outline-danger btn-sm text-nowrap">删除</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}

@@ -13,9 +13,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Length, Optional
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap5
 from flask import render_template, flash
 from flask_wtf.csrf import CSRFError
+from wtforms.validators import NumberRange
 
 #使用Bootstrap4 
 
@@ -64,13 +65,14 @@ class ActorInfo(db.Model):
     actor_name = db.Column(db.String(20), nullable=False)
     gender = db.Column(db.String(2), nullable=False)
     country = db.Column(db.String(20))
-
+100
 class MovieForm(FlaskForm):
-    movie_name = StringField('Movie Name', validators=[DataRequired(), Length(max=20)])
-    release_date = DateField('Release Date', format='%Y-%m-%d', validators=[Optional()])
+    movie_id = StringField('Movie ID')
+    movie_name = StringField('Movie Name', validators=[Length(max=20)])
+    release_date = DateField('Release Date', format=r'%Y-%m-%d', validators=[Optional()])
     country = StringField('Country', validators=[Length(max=20)])
     type = StringField('Type', validators=[Optional()])
-    year = IntegerField('Year')
+    year = IntegerField('Year', validators=[NumberRange(min=1800,max=2100),Optional()])
 
 def db_connect_check():
     '''
@@ -86,8 +88,8 @@ def db_connect_check():
             exit(0)
             return False
 
-@app.route('/edit_movie/<movie_id>', methods=['GET', 'POST'])
-def edit_movie(movie_id):
+@app.route('/movie_edit/<movie_id>', methods=['GET', 'POST'])
+def movie_edit(movie_id):
     movie = MovieInfo.query.get_or_404(movie_id)
     form = MovieForm(obj=movie)
 
@@ -99,23 +101,24 @@ def edit_movie(movie_id):
         flash(f'成功修改编号为{movie_id}的电影信息！', 'success')
         return redirect(url_for('index'))
 
-    return render_template('edit_movie.html', form=form, movie=movie)
+    return render_template('movie_edit.html', form=form, movie=movie)
 
 # 删除
-@app.route('/delete_movie/<movie_id>', methods=['POST'])  # 限定只接受 POST 请求
-def delete_movie(movie_id):
+@app.route('/movie_delete/<movie_id>', methods=['POST'])  # 限定只接受 POST 请求
+def movie_delete(movie_id):
     movie = MovieInfo.query.get_or_404(movie_id)  # 获取电影记录
     db.session.delete(movie)  # 删除对应的记录
-    db.session.commit()  # 提交数据库会话
-    flash('Item deleted.',"success")
+    db.session.commit()  # 提交数据库会话E
+    flash(f'成功删除编号为{movie_id}的电影信息！',"success")
     return redirect(url_for('index'))  # 重定向回主页
 
 # 搜索
-@app.route('/search_movie', methods=['GET', 'POST'])
-def search_movie():
+@app.route('/movie_search', methods=['GET', 'POST'])
+def movie_search():
     form = MovieForm()
 
-    if request.method == 'POST' and form.validate_on_submit():
+    if form.validate_on_submit(): 
+        movie_id = form.movie_id.data
         movie_name = form.movie_name.data
         release_date = form.release_date.data
         country = form.country.data
@@ -124,6 +127,8 @@ def search_movie():
 
         # Query the database based on the form data
         query = MovieInfo.query
+        if movie_id: 
+            query = query.filter(MovieInfo.movie_id.ilike(f'%{movie_id}%'))
         if movie_name:
             query = query.filter(MovieInfo.movie_name.ilike(f'%{movie_name}%'))
         if release_date:
@@ -137,10 +142,29 @@ def search_movie():
 
         results = query.all()
 
-        return render_template('search_movie.html', form=form, results=results)
+        return render_template('movie_search.html', form=form, results=results)
 
-    return render_template('search_movie.html', form=form, results=None)
+    return render_template('movie_search.html', form=form, results=None)
 
+@app.route('/movie', methods=['GET', 'POST'])
+def movie():
+    form = MovieForm()
+    if form.validate_on_submit():
+        new_movie = MovieInfo(
+            movie_id=form.movie_id.data,
+            movie_name=form.movie_name.data,
+            release_date=form.release_date.data,
+            country=form.country.data,
+            type=form.type.data,
+            year=form.release_date.data.year
+        )
+        db.session.add(new_movie)
+        db.session.commit()
+        flash(f'成功添加电影', 'success')
+        return redirect(url_for('movie'))
+    else:
+        print("123123",request.method, form.validate_on_submit(),form)
+    return render_template('movie.html',form = form)
 
 
 @app.context_processor
@@ -153,7 +177,7 @@ def inject_user():  # 函数名可以随意修改
 
 @app.route('/')
 def index():
-    return render_template('table.html')
+    return redirect(url_for('movie'))
 
 if __name__ == '__main__':
     db_connect_check()
