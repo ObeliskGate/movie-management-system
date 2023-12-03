@@ -40,3 +40,5 @@ https://github.com/Silverwolf-x/study-flask.git
 - 正式发布version-alpha
 
 实现movie_info和actor_info两个表分别的查询、编辑、新建、删除
+
+记得使用utf8编码的sql初始化数据
