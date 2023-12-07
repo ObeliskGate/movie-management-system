@@ -1,4 +1,3 @@
-from flask_bootstrap import Bootstrap5
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import OperationalError
 from flask import Flask
@@ -10,7 +9,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 关闭对模型修改的
 app.config['SECRET_KEY'] = 'your_secret_key'
 
 db = SQLAlchemy(app) 
-bootstrap = Bootstrap5(app)  
 
 def db_connect_check():
     '''
