@@ -1,8 +1,6 @@
 from flask import render_template, redirect, url_for, flash
 from init import db_connect_check,app,db
-from models import MovieInfo,MovieForm
-from models import ActorInfo,ActorForm
-from models import MovieActorRelation,MovieBox
+from models import *
 from pipeline import *
 
 
@@ -30,7 +28,7 @@ def movie_delete(movie_id):
 # 搜索
 @app.route('/movie_search', methods=['GET', 'POST'])
 def movie_search():
-    form = MovieForm()
+    form = MovieSearchForm()
     if form.validate_on_submit(): 
         return render_template('movie_search.html', form=form, results=movie_search_pipeline(form))
     return render_template('movie_search.html', form=form, results=None)
@@ -55,7 +53,7 @@ def actor_delete(actor_id):
 
 @app.route('/actor_search', methods=['GET', 'POST'])
 def actor_search():
-    form = ActorForm()
+    form = ActorSearchForm()
     if form.validate_on_submit(): 
         return render_template('actor_search.html', form=form, results=actor_search_pipeline(form))
     return render_template('actor_search.html', form=form, results=None)
@@ -66,14 +64,7 @@ def actor_search():
 def actor():
     form = ActorForm()
     if form.validate_on_submit():
-        new_actor = ActorInfo(
-            actor_id=form.actor_id.data,
-            actor_name=form.actor_name.data,
-            gender=form.gender.data,
-            country=form.country.data,
-        )
-        db.session.add(new_actor)
-        db.session.commit()
+        actor_add_pipeline(form)
         flash(f'成功添加演员', 'success')
         return redirect(url_for('actor'))
     return render_template('actor.html',form = form)
@@ -101,7 +92,13 @@ def inject_user():  # 函数名可以随意修改，全局传入参数
 
 @app.route('/')
 def index():
-    return redirect(url_for('movie'))
+    form = SQLConnectForm()
+    db_c = True
+    print(db_c)
+    if form.validate_on_submit():
+        # 处理表单提交的逻辑，比如连接到数据库等
+        ...
+    return render_template('index.html',db_connect = db_c,form=form)
 
 if __name__ == '__main__':
     db_connect_check()

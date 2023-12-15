@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}主页{% endblock %}
+
+{% if not db_connect %}
+
+{% block navall %}
+<ul class="nav nav-pills">
+    <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="{{ url_for('index')}}">主页</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">请连接数据库</a>
+    </li>
+</ul>
+{% endblock %}
+
+{% else %}
+
+{% block navindex %}
+<a class="nav-link active" aria-current="page" href="{{ url_for('index')}}">主页</a>
+{% endblock %}
+
+{% endif %}
+
+{% block content %}
+<div class="accordion" id="accordionExample">
+    <div class="row">
+
+        <div class="col">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        使用SQL server连接数据库
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <form method="post" action="{{ url_for('index') }}">
+                            {{ form.hidden_tag() }}
+                            <p>
+                                {{ form.server.label(class="form-label")}}
+                                {{ form.server(class="form-control") }}
+                            </p>
+                            <p>
+                                {{ form.user.label(class="form-label")}}
+                                {{ form.user(class="form-control") }}
+                            </p>
+                            <p>
+                                {{ form.password.label(class="form-label")}}
+                                {{ form.password(class="form-control") }}
+                            </p>
+                            <p>
+                                {{ form.database.label(class="form-label")}}
+                                {{ form.database(class="form-control") }}
+                            </p>
+
+                            <button type="submit" class="btn btn-outline-info">连接</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        使用本地SQLite数据库
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}

@@ -10,7 +10,7 @@
 
     <div class="col-md-3">
         {{ form.actor_id.label(class="form-label") }}
-        {{ form.actor_id(class="form-control", placeholder="输入演员编号") }}
+        {{ form.actor_id(class="form-control", placeholder="输入4位编号") }}
     </div>
 
     <div class="col-md-3">
@@ -36,7 +36,8 @@
 <br>
 <h1>搜索结果</h1>
 <div class="table-responsive">
-    <table class="table table-hover align-middle">
+    <!-- <table class="table table-hover align-middle"> -->
+    <table class="table align-middle">
         <thead class="border-dark">
             <tr>
                 {% for column in actors_col %}
@@ -53,7 +54,7 @@
                 <td>{{ actor.country }}</td>
                 <td>
                     <!-- 编辑 -->
-                    <div class="d-grid gap-1 d-md-flex justify-content-md">
+                    <div class="d-grid gap-1 d-md-flex justify-content">
                         <a type="button" class="btn btn-outline-success btn-sm text-nowrap"
                             href="{{ url_for('actor_edit', actor_id=actor.actor_id) }}">编辑</a>
                         <!-- 删除 -->
