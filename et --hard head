@@ -1,0 +1,78 @@
+[33mcommit fdc9303c518d9c7f7c0569b07a199c525bf424b5[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Sat Dec 16 02:11:04 2023 +0800
+
+    创建index
+
+[33mcommit a5d1cc5983fc0a92b5627b7becadbed013e33564[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Fri Dec 8 00:07:36 2023 +0800
+
+    更新requirements.txt，删除不必要的库
+
+[33mcommit a9c5b897d9b3854815620f36fb54afbe6576b7cb[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Sun Dec 3 23:39:31 2023 +0800
+
+    功能预览
+
+[33mcommit 60fdbdb35d9397d25eec16b40ba1bd2d56ddacc5[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Sun Dec 3 23:10:25 2023 +0800
+
+    上传utf8编码的sql数据
+
+[33mcommit cceb9f31f8fec49e71aae1b090ebb2b9cf8dd22a[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Sun Dec 3 23:09:02 2023 +0800
+
+    正式发布version-alpha
+
+[33mcommit df68bcf10db529f711e610253253b832fe1ff067[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Sun Dec 3 20:39:48 2023 +0800
+
+    添加搜索功能，至此movie_info表基本功能完全实现
+
+[33mcommit 93f462b3b52e57e5aa14f5a460b19eff371d4a50[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Sun Dec 3 17:06:50 2023 +0800
+
+    基于flask-Bootstrap5完全重写
+
+[33mcommit 2b1174bf7ddddbb04931746220938ff50bb335c8[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Sat Nov 25 00:29:30 2023 +0800
+
+    start project
+
+[33mcommit c5f0ce3f1283bd395b710fe7af92597ecf214379[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Mon Nov 13 20:37:46 2023 +0800
+
+    add study git url
+
+[33mcommit 9b712b31812c9e8b4c74fa825db0515afcac2597[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Fri Nov 10 09:04:57 2023 +0800
+
+    1”
+    “move study process to new repo
+
+[33mcommit baf6aa9a713c15abe991b04aa9846e55a12d8f1e[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Fri Nov 10 08:46:53 2023 +0800
+
+    add Instructions and update doc
+
+[33mcommit 32a87641d3b083f4f6238655b3d3011823344233[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Mon Nov 6 17:20:37 2023 +0800
+
+    init
+
+[33mcommit 65feab6788920a7d5f46bb3ff23a3dbb3ed830e4[m
+Author: silverwolf-x <185666132@qq.com>
+Date:   Mon Nov 6 17:07:11 2023 +0800
+
+    init
