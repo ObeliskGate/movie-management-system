@@ -3,6 +3,8 @@
 from src.init import db
 from src.models import MovieInfo,ActorInfo
 
+from sqlalchemy.exc import IntegrityError
+
 def movie_search_pipeline(form):
     query_params = {
             'movie_id': MovieInfo.movie_id.ilike(f'%{str(form.movie_id.data)}%') if form.movie_id.data else None,
@@ -26,7 +28,13 @@ def movie_add_pipeline(form):
             year=form.release_date.data.year
         )
     db.session.add(new_movie)
-    db.session.commit()
+    try:
+        db.session.commit()
+        return True, f'成功添加{new_movie.movie_id}的演员信息！'
+    except IntegrityError as e:
+        print("主键重复")
+        print(e.orig.args[1].decode('utf-8'))
+        return False,f"添加失败！{new_movie.movie_id}主键重复,请更换一个数字"
 
 def actor_search_pipeline(form):
     actor_id = form.actor_id.data
@@ -48,6 +56,7 @@ def actor_search_pipeline(form):
     return results
 
 def actor_add_pipeline(form):
+    '''返回(bool,信息）'''
     new_actor = ActorInfo(
             actor_id=str(form.actor_id.data),
             actor_name=form.actor_name.data,
@@ -55,6 +64,12 @@ def actor_add_pipeline(form):
             country=form.country.data,
         )
     db.session.add(new_actor)
-    db.session.commit()
+    try:
+        db.session.commit()
+        return True, f'成功添加{new_actor.actor_id}的演员信息！'
+    except IntegrityError as e:
+        print("主键重复")
+        print(e.orig.args[1].decode('utf-8'))
+        return False,f"添加失败！{new_actor.actor_id}主键重复,请更换一个数字"
 
 

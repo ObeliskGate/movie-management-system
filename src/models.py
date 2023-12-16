@@ -1,5 +1,5 @@
 from wtforms import StringField, IntegerField, DateField, SelectField
-from wtforms.validators import Length, Optional, NumberRange,InputRequired
+from wtforms.validators import DataRequired, Length, Optional, NumberRange,InputRequired
 from flask_wtf import FlaskForm
 # from init import db
 from src.init import db
@@ -60,26 +60,41 @@ class ActorForm(FlaskForm):
 
 class ActorSearchForm(FlaskForm):
     '''查询actor'''
-    actor_id = IntegerField('Actor ID', validators=[Optional(),NumberRange(min=2000, max=9999)])
+    actor_id = IntegerField('Actor ID', validators=[Optional()])
     actor_name = StringField('Actor Name', validators=[Optional(), Length(max=50)])
     gender_choices = [('', '选择性别'),('男', '男'), ('女', '女')]
     gender = SelectField('Gender', choices=gender_choices, validators=[Optional()])
     country = StringField('Country', validators=[Length(max=20), Optional()])
 
+class ActorEditForm(FlaskForm):
+    '''新建、编辑actor'''
+    # actor_id = StringField('Actor ID', validators=[InputRequired(), Length(max=10)])
+    actor_id = IntegerField('Actor ID', validators=[NumberRange(min=2000, max=1e10)])
+    actor_name = StringField('Actor Name', validators=[InputRequired(), Length(max=50)])
+    gender_choices = [('', '选择性别'),('男', '男'), ('女', '女')]
+    gender = SelectField('Gender', choices=gender_choices, validators=[InputRequired(), Length(max=10)])
+    country = StringField('Country', validators=[InputRequired(), Length(max=20)])
+
 class MovieForm(FlaskForm):
-    # movie_id = StringField('Movie ID')    
     movie_id = IntegerField('Movie ID', validators=[InputRequired(), NumberRange(min=1000, max=1e10)])
     movie_name = StringField('Movie Name', validators=[InputRequired(),Length(max=20)])
     release_date = DateField('Release Date', format=r'%Y-%m-%d', validators=[InputRequired()])
     country = StringField('Country', validators=[InputRequired(),Length(max=20)])
     type = StringField('Type', validators=[InputRequired()])
-    year = IntegerField('Year', validators=[NumberRange(min=2000,max=2100)])
+    year = IntegerField('Year', validators=[NumberRange(min=1700,max=2100)])
 
-class MovieSearchForm(FlaskForm):
-    # movie_id = StringField('Movie ID')    
-    movie_id = IntegerField('Movie ID', validators=[Optional(), NumberRange(min=1000, max=1e10)])
+class MovieSearchForm(FlaskForm):   
+    movie_id = IntegerField('Movie ID', validators=[Optional()])
     movie_name = StringField('Movie Name', validators=[Length(max=20)])
     release_date = DateField('Release Date', format=r'%Y-%m-%d', validators=[Optional()])
     country = StringField('Country', validators=[Length(max=20)])
     type = StringField('Type', validators=[Optional()])
-    year = IntegerField('Year', validators=[NumberRange(min=2000,max=2100),Optional()])
+    year = IntegerField('Year', validators=[NumberRange(min=1700,max=2100),Optional()])
+
+class MovieEditForm(FlaskForm):   
+    movie_id = IntegerField('Movie ID', validators=[NumberRange(min=1000, max=1e10)])
+    movie_name = StringField('Movie Name', validators=[InputRequired(),Length(max=20)])
+    release_date = DateField('Release Date', format=r'%Y-%m-%d', validators=[InputRequired()])
+    country = StringField('Country', validators=[InputRequired(),Length(max=20)])
+    type = StringField('Type', validators=[InputRequired()])
+    year = IntegerField('Year', validators=[NumberRange(min=1700,max=2100)])    

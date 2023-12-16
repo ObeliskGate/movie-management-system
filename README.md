@@ -53,3 +53,4 @@ https://github.com/Silverwolf-x/study-flask.git
 
 20131216
 - 编辑主页，修改框架，正式发布version 1.0
+- 分离search,edit,add的form，完备验证模块，发布version 1.1

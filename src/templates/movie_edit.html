@@ -9,13 +9,13 @@
 <form method="post" class="row g-3">
     {{ form.csrf_token }}
     {{ form.hidden_tag() }}
-
+    <!-- {{ form.errors }} -->
     <div class="col-md-6">
         <label class="form-label" for="movie_id">Movie ID</label>
         <input class="form-control" type="text" placeholder="{{ movie.movie_id }}" disabled readonly>
     </div>
 
-    <div class="col-md-6 input has-validation">
+    <div class="col-md-6">
         {{ form.movie_name.label(class="form-label") }}
         {{ form.movie_name(class="form-control", placeholder="输入电影名称") }}
         <!-- 等价于用falsk_wtf简化了代码编写。详情在网页——右键——检查——源代码——页面，找到实际执行时的代码

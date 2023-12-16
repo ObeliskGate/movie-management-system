@@ -9,13 +9,14 @@ from src.pipeline import *
 @app.route('/movie_edit/<movie_id>', methods=['GET', 'POST'])
 def movie_edit(movie_id):
     movie = MovieInfo.query.get_or_404(movie_id)
-    form = MovieForm(obj=movie)
+    form = MovieEditForm(obj=movie)
+
     if form.validate_on_submit():
         movie.year = form.release_date.data.year
         form.populate_obj(movie)
         db.session.commit()
         flash(f'成功修改编号为{movie_id}的电影信息！', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('movie'))
     return render_template('movie_edit.html', form=form, movie=movie)
 
 # 删除
@@ -40,8 +41,11 @@ def movie_search():
 def movie():
     form = MovieForm()
     if form.validate_on_submit():
-        movie_add_pipeline(form)
-        flash(f'成功添加电影', 'success')
+        flag, message = movie_add_pipeline(form)
+        if flag:
+            flash(message, 'success')
+        else:
+            flash(message, 'warning')
         return redirect(url_for('movie'))
     return render_template('movie.html',form = form)
 
@@ -66,15 +70,18 @@ def actor_search():
 def actor():
     form = ActorForm()
     if form.validate_on_submit():
-        actor_add_pipeline(form)
-        flash(f'成功添加演员', 'success')
+        flag, message = actor_add_pipeline(form)
+        if flag:
+            flash(message, 'success')
+        else:
+            flash(message, 'warning')
         return redirect(url_for('actor'))
     return render_template('actor.html',form = form)
 
 @app.route('/actor_edit/<actor_id>', methods=['GET', 'POST'])
 def actor_edit(actor_id):
     actor = ActorInfo.query.get_or_404(actor_id)
-    form = ActorForm(obj=actor)
+    form = ActorEditForm(obj=actor)
 
     if form.validate_on_submit():
         form.populate_obj(actor)
@@ -94,9 +101,11 @@ def inject_user():  # 函数名可以随意修改，全局传入参数
 
 @app.route('/')
 def index():
-    # return redirect(url_for('actor'))
     return render_template('index.html')
 
 if __name__ == '__main__':
     db_connect_check()
-    app.run(debug=True)
+    app.run(port=12345,debug=True)
+    with app.app_context():
+        ...
+    ...
