@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}主页{% endblock %}
+
+
+{% block navindex %}
+<a class="nav-link active" aria-current="page" href="{{ url_for('index')}}">主页</a>
+{% endblock %}
+
+
+{% block content %}
+
+<h2>项目特色</h2>
+<ul>
+    <li>同步连接：SQL Server两个数据库movie_info和actor_info</li>
+    <li>基础功能实现：实现的查询、添加、修改、删除</li>
+    <li>交互性强：成功失败都有弹窗反馈，删除会有二次确认</li>
+    <li>界面美观：符合现代审美</li>
+</ul>
+
+<h2>项目实现</h2>
+<ul>
+    <li>数据库：SQL Server</li>
+    <li>编程语言：Python</li>
+    <li>Web 框架：Flask</li>
+    <li>前端框架：Bootstrap5</li>
+</ul>
+
+
+{% endblock %}

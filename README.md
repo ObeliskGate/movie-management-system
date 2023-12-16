@@ -1,8 +1,6 @@
-# movie management system
+# 电影管理系统movie management system
 
-电影管理系统
-
-![功能预览](功能.jpg)
+![功能预览](_doc/功能.jpg)
 
 hyx
 
@@ -10,14 +8,20 @@ hyx
 
 20231106
 
-## 功能：
-电影的录入、查询、演员的查询、票房分析、票房预测。
+## 特色
 
-要求支持上述功能中的2个至若干个。
-## 要求
-个人独立完成
+- 同步连接：SQL server两个数据库movie_info和actor_info
+- 基础功能实现：实现的查询、添加、修改、删除
 
-把movie数据库的几个表放进去。
+- 交互性强：成功失败都有弹窗反馈，删除会有二次确认
+- 界面美观：符合现代审美
+
+## 实现
+
+- 数据库：SQL server
+- 编程语言：Python
+- Web 框架：Flask
+- 前端框架：Bootstrap5
 
 ## 参考
 
@@ -25,7 +29,9 @@ hyx
 
 [Flask 入门教程 3.0](https://helloflask.com/book/3/)
 
-## 学习过程
+[Bootstrap5 中文手册](https://www.bootstrap.cn/doc/book/2.html)
+
+## Flask学习过程
 
 https://github.com/Silverwolf-x/study-flask.git
 
@@ -44,3 +50,6 @@ https://github.com/Silverwolf-x/study-flask.git
 实现movie_info和actor_info两个表分别的查询、编辑、新建、删除
 
 记得使用utf8编码的sql初始化数据
+
+20131216
+- 编辑主页，修改框架，正式发布version 1.0
