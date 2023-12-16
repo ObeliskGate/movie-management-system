@@ -34,7 +34,7 @@ def movie_add_pipeline(form):
     except IntegrityError as e:
         print("主键重复")
         print(e.orig.args[1].decode('utf-8'))
-        return False,f"添加失败！{new_movie.movie_id}主键重复,请更换一个数字"
+        return False,f"添加失败！{new_movie.movie_id}主键重复，请更换一个数字！"
 
 def actor_search_pipeline(form):
     actor_id = form.actor_id.data
@@ -70,6 +70,6 @@ def actor_add_pipeline(form):
     except IntegrityError as e:
         print("主键重复")
         print(e.orig.args[1].decode('utf-8'))
-        return False,f"添加失败！{new_actor.actor_id}主键重复,请更换一个数字"
+        return False,f"添加失败！{new_actor.actor_id}主键重复，请更换一个数字！"
 
 

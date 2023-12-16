@@ -4,12 +4,6 @@ from flask_wtf import FlaskForm
 # from init import db
 from src.init import db
 
-class SQLConnectForm(FlaskForm):
-    server = StringField('Server', default='DESKTOP-4KEIUAR', validators=[InputRequired(), Length(max=50)])
-    user = StringField('User', default='sa', validators=[InputRequired(), Length(max=50)])
-    password = StringField('Password', default='123456', validators=[InputRequired(), Length(max=50)])
-    database = StringField('Database', default='movieDBtest', validators=[InputRequired(), Length(max=50)])
-
 class MovieInfo(db.Model):
     __tablename__ = "movie_info"
 
@@ -81,7 +75,7 @@ class MovieForm(FlaskForm):
     release_date = DateField('Release Date', format=r'%Y-%m-%d', validators=[InputRequired()])
     country = StringField('Country', validators=[InputRequired(),Length(max=20)])
     type = StringField('Type', validators=[InputRequired()])
-    year = IntegerField('Year', validators=[NumberRange(min=1700,max=2100)])
+    year = IntegerField('Year', validators=[NumberRange(min=1700,max=2100),Optional()])
 
 class MovieSearchForm(FlaskForm):   
     movie_id = IntegerField('Movie ID', validators=[Optional()])
@@ -97,4 +91,4 @@ class MovieEditForm(FlaskForm):
     release_date = DateField('Release Date', format=r'%Y-%m-%d', validators=[InputRequired()])
     country = StringField('Country', validators=[InputRequired(),Length(max=20)])
     type = StringField('Type', validators=[InputRequired()])
-    year = IntegerField('Year', validators=[NumberRange(min=1700,max=2100)])    
+    year = IntegerField('Year', validators=[NumberRange(min=1700,max=2100),Optional()])    

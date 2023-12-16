@@ -26,7 +26,7 @@ def movie_delete(movie_id):
     db.session.delete(movie)
     db.session.commit() 
     flash(f'成功删除编号为{movie_id}的电影信息！',"success")
-    return redirect(url_for('index')) 
+    return redirect(url_for('movie')) 
 
 # 搜索
 @app.route('/movie_search', methods=['GET', 'POST'])

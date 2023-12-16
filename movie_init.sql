@@ -4,8 +4,6 @@ go
 
 use movieDBtest;
 
-
-
 Create Table movie_info
 (
  movie_id varchar(10) Not Null,

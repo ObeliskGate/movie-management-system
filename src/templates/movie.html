@@ -19,6 +19,7 @@
         </thead>
         <tbody>
             <form method="post">
+                {{ form.error }}
                 <tr>
                     {{ form.csrf_token }}{{ form.hidden_tag() }}
                     <td scope="row">{{ form.movie_id(class="form-control", placeholder="输入电影编号") }}</td>
