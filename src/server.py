@@ -1,10 +1,10 @@
 from flask import render_template, redirect, url_for, flash
-from init import db_connect_check,app,db
-from models import *
-from pipeline import *
-# from src.init import db_connect_check,app,db
-# from src.models import *
-# from src.pipeline import *
+# from init import db_connect_check,app,db
+# from models import *
+# from pipeline import *
+from src.init import db_connect_check,app,db
+from src.models import *
+from src.pipeline import *
 
 @app.route('/movie_edit/<movie_id>', methods=['GET', 'POST'])
 def movie_edit(movie_id):
@@ -94,9 +94,9 @@ def inject_user():  # 函数名可以随意修改，全局传入参数
 
 @app.route('/')
 def index():
-    return redirect(url_for('actor'))
-    # return render_template('index.html')
+    # return redirect(url_for('actor'))
+    return render_template('index.html')
 
 if __name__ == '__main__':
     db_connect_check()
-    app.run(port=6666,debug=True)
+    app.run(debug=True)

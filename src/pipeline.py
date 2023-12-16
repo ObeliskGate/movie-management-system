@@ -1,7 +1,7 @@
-from init import db
-from models import MovieInfo,ActorInfo
-# from src.init import db
-# from src.models import MovieInfo,ActorInfo
+# from init import db
+# from models import MovieInfo,ActorInfo
+from src.init import db
+from src.models import MovieInfo,ActorInfo
 
 def movie_search_pipeline(form):
     query_params = {

@@ -1,8 +1,8 @@
 from wtforms import StringField, IntegerField, DateField, SelectField
 from wtforms.validators import Length, Optional, NumberRange,InputRequired
 from flask_wtf import FlaskForm
-from init import db
-# from src.init import db
+# from init import db
+from src.init import db
 
 class SQLConnectForm(FlaskForm):
     server = StringField('Server', default='DESKTOP-4KEIUAR', validators=[InputRequired(), Length(max=50)])
