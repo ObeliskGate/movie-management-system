@@ -3,8 +3,13 @@ from sqlalchemy.exc import OperationalError
 from flask import Flask
 
 app = Flask(__name__)
+
+user = 'sa'
+password = '123456'
+server = 'DESKTOP-4KEIUAR'
 db_name = 'movieDBtest'
-app.config["SQLALCHEMY_DATABASE_URI"] = f'mssql+pymssql://sa:123456@DESKTOP-4KEIUAR/{db_name}?charset=utf8'
+
+app.config["SQLALCHEMY_DATABASE_URI"] = f'mssql+pymssql://{user}:{password}@{server}/{db_name}?charset=utf8'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 关闭对模型修改的监控
 app.config['SECRET_KEY'] = 'your_secret_key'
 
