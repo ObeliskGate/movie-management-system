@@ -56,9 +56,8 @@
                     <li><a class="dropdown-item" href="{{ url_for('actor')}}">所有条目</a></li>
                     <li><a class="dropdown-item" href="{{ url_for('actor_search')}}">搜索条目</a></li>
                 </ul>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">未开放功能</a>
-            </li>
+                {% block navtype %}
+                {% endblock%}
         </ul>
         {% endblock %}
     </div>

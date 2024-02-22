@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash
 # from init import db_connect_check,app,db
 # from models import *
 # from pipeline import *
-from src.init import db_connect_check,app,db
+from src.init import db_connect_check,app,db,server_type
 from src.models import *
 from src.pipeline import *
 
@@ -101,7 +101,7 @@ def inject_user():  # 函数名可以随意修改，全局传入参数
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html',server_type = server_type)
 
 if __name__ == '__main__':
     db_connect_check()
