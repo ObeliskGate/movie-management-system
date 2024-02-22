@@ -9,28 +9,26 @@ hyx
 20231106
 
 ## 使用
-1. SQL server配置
-    
-    下载安装SQL Server Management Studio
-    
-    在`SQL server配置管理器`中，打开`SQL server服务`；并在`SQL server网络配置`中，打开`TCP/IP配置`
-    > 否则会报错提示`DB-Lib error message 20009, severity 9`
-    
-    SQL Server Management Studio运行`movie_init.sql`，存储movieDBtest数据库
-2. python配置
-
-    python版本不限，建议3.10.13
-
-    安装所需python包
+- 安装所需python包，推荐3.10
     ```{python}
     pip install -r requirements.txt
     ```
-3. 数据库配置
     
-    在`src/init.py`中，修改`server`为本地服务器名称
+- 运行`run.py`
 
-    > 一般而言，本地服务器自带有管理员账号sa，密码默认为123456
-4. 运行`run.py`
+## (可选) SQL server 配置
+    
+1. 下载安装SQL Server Management Studio
+
+2. 在`SQL server配置管理器`中，打开`SQL server服务`；并在`SQL server网络配置`中，打开`TCP/IP配置`
+> 否则会报错提示`DB-Lib error message 20009, severity 9`
+
+3. SQL Server Management Studio运行`movie_init.sql`，存储movieDBtest数据库
+
+4. 数据库配置：在`config.ini`中，修改`server`为本地服务器名称
+
+> 一般而言，本地服务器自带有管理员账号sa，密码默认为123456
+
 
 ## 特色
 
@@ -41,7 +39,7 @@ hyx
 
 ## 实现
 
-- 数据库：SQL server
+- 数据库：SQL server / sqlite3
 - 编程语言：Python
 - Web 框架：Flask
 - 前端框架：Bootstrap5
@@ -81,3 +79,6 @@ https://github.com/Silverwolf-x/study-flask.git
 
 20231222
 - 完善使用信息
+
+20240222
+- 增加sqlite数据库，方便随时运行该程序
