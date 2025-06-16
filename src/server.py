@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash
 # from init import db_connect_check,app,db
 # from models import *
 # from pipeline import *
-from src.init import db_connect_check,app,db,server_type
+from src.init import db_connect_check, app, db, server_type
 from src.models import *
 from src.pipeline import *
 
