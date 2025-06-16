@@ -204,7 +204,7 @@ async def get_reply(input: str, clear_history=False) -> str:
 
 def set_chat_route(app):
     @app.route('/chat')
-    async def _chat_html():
+    async def chat():
         return render_template('chat.html')
 
     @app.route('/api/chat', methods=['POST'])
