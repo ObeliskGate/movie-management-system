@@ -3,6 +3,7 @@ from sqlalchemy.exc import OperationalError
 from flask import Flask
 import configparser
 import os
+
 config = configparser.ConfigParser()
 config.read('config.ini')
 

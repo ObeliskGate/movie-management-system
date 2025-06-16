@@ -1,18 +1,15 @@
-from src.models import MovieInfo
-from src.init import app, get_db
-import os
-from typing import Optional, Dict, List
 from flask import render_template, request, jsonify
-import json
-import time
 from sqlalchemy import (
     inspect,
     text,
 )
 
 # 初始化AutoGen
-from autogen import AssistantAgent, UserProxyAgent, config_list_from_json
+from autogen import AssistantAgent, UserProxyAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
+
+from src.models import MovieInfo
+from src.init import get_db
 
 
 # 配置Qwen模型
@@ -187,8 +184,6 @@ def query_database(query: str) -> str:
             异常 args: {e.args}
             异常 repr: {repr(e)}
         """
-    
-conversation_history = []
 
 
 async def get_reply(input: str, clear_history=False) -> str:
@@ -201,40 +196,40 @@ async def get_reply(input: str, clear_history=False) -> str:
         )
         # Extract the assistant's reply
         last_msg = user_proxy.last_message()
-        print(assistant.last_message())
-        if 'tool_calls' in assistant.last_message():
-            print(assistant.last_message()['tool_calls'])
+        print(assistant.chat_messages)
         return last_msg.get("content", "No reply") if last_msg else "No reply"
     except Exception as e:
         return f"Error: {str(e)}"
-
-@app.route('/chat')
-async def chat_html():
-    await user_proxy.a_initiate_chat(
-        assistant,
-        message="请预加载数据库中的数据",
-        max_turns=2,
-        clear_history=True,  # Clear history for initial setup
-    )
-    return render_template('chat.html')
-
-@app.route('/api/chat', methods=['POST'])
-async def query():
-    user_input = request.json.get('message')
-    if not user_input:
-        return jsonify({'error': '查询不能为空'}), 400
-
-    try:
-        # 直接发送用户输入到现有对话
-
-        result = await get_reply(user_input)
-        return jsonify({'response': result})
-    except Exception as e:
-        return jsonify({'error': f"查询失败: {str(e)}"}), 500
     
 
-@app.route('/api/chat/history', methods=['GET'])
-def get_chat_history():
-    """获取聊天历史"""
-    return jsonify({'response': conversation_history})
+def set_chat_route(app):
+    @app.route('/chat')
+    async def _chat_html():
+        await user_proxy.a_initiate_chat(
+            assistant,
+            message="请预加载数据库中的数据",
+            max_turns=2,
+            clear_history=True,  # Clear history for initial setup
+        )
+        return render_template('chat.html')
+
+    @app.route('/api/chat', methods=['POST'])
+    async def _query():
+        user_input = request.json.get('message')
+        if not user_input:
+            return jsonify({'error': '查询不能为空'}), 400
+
+        try:
+            # 直接发送用户输入到现有对话
+
+            result = await get_reply(user_input)
+            return jsonify({'response': result})
+        except Exception as e:
+            return jsonify({'error': f"查询失败: {str(e)}"}), 500
+        
+
+    @app.route('/api/chat/history', methods=['GET'])
+    def _get_chat_history():
+        """获取聊天历史"""
+        return jsonify({'response': conversation_history})
 
