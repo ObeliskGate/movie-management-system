@@ -37,6 +37,11 @@
                 <a class="nav-link" aria-current="page" href="{{ url_for('index')}}">主页</a>
                 {% endblock %}
             </li>
+            <li class="nav-item">
+                {% block navchat %}
+                 <a class="nav-link" aria-current="page" href="{{ url_for('chat')}}">智能搜索信息</a>
+                {% endblock %}
+            </li>
             <li class="nav-item dropdown">
                 {% block navmovie %}
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"

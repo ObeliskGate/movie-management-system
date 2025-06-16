@@ -3,6 +3,7 @@ from sqlalchemy.exc import OperationalError
 from flask import Flask
 import configparser
 import os
+
 config = configparser.ConfigParser()
 config.read('config.ini')
 
@@ -30,6 +31,10 @@ elif server_type == 'sqlite':
 else:
     print('请填写config.ini选择数据库')
     exit()
+
+def get_db():
+    """Get the database instance."""
+    return db
 
 def db_connect_check():
     '''

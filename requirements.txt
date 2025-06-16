@@ -1,4 +1,7 @@
-flask
+flask[async]
 flask_sqlalchemy
 flask_wtf
 pymssql
+openai
+pyautogen
+sqlalchemy
