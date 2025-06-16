@@ -196,21 +196,15 @@ async def get_reply(input: str, clear_history=False) -> str:
         )
         # Extract the assistant's reply
         last_msg = user_proxy.last_message()
-        print(assistant.chat_messages)
         return last_msg.get("content", "No reply") if last_msg else "No reply"
     except Exception as e:
         return f"Error: {str(e)}"
-    
+
+
 
 def set_chat_route(app):
     @app.route('/chat')
     async def _chat_html():
-        await user_proxy.a_initiate_chat(
-            assistant,
-            message="请预加载数据库中的数据",
-            max_turns=2,
-            clear_history=True,  # Clear history for initial setup
-        )
         return render_template('chat.html')
 
     @app.route('/api/chat', methods=['POST'])
@@ -226,3 +220,16 @@ def set_chat_route(app):
             return jsonify({'response': result})
         except Exception as e:
             return jsonify({'error': f"查询失败: {str(e)}"}), 500
+        
+
+    @app.route('/api/init_chat')
+    async def _init_chat():
+        # 单独处理初始化
+        await user_proxy.a_initiate_chat(
+            assistant,
+            message="请预加载数据库中的数据",
+            max_turns=2,
+            clear_history=True,
+        )
+        return jsonify({"status": "success"})
+        

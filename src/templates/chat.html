@@ -21,6 +21,34 @@
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        #loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            border-radius: 8px;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         #chat-history {
             height: 400px;
@@ -67,6 +95,10 @@
         #send-button:hover {
             background-color: #0056b3;
         }
+        #send-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
         #error-message {
             color: red;
             margin-top: 10px;
@@ -77,10 +109,15 @@
 <body>
     <h1>FilmHub 电影查询</h1>
     <div id="chat-container">
+        <div id="loading-overlay">
+            <div class="loading-spinner"></div>
+            <p>系统初始化中...</p>
+        </div>
+        
         <div id="chat-history"></div>
         <div id="input-container">
-            <input type="text" id="user-input" placeholder="请输入您的电影查询...">
-            <button id="send-button">发送</button>
+            <input type="text" id="user-input" placeholder="请输入您的电影查询..." disabled>
+            <button id="send-button" disabled>发送</button>
         </div>
         <div id="error-message"></div>
     </div>
@@ -90,11 +127,12 @@
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
         const errorMessage = document.getElementById('error-message');
+        const loadingOverlay = document.getElementById('loading-overlay');
 
         // 添加消息到聊天历史
         function addMessage(content, role) {
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${role === 'user' ? 'user-message' : 'assistant-message'}`;
+            messageDiv.className = `message ${role}-message`;
             messageDiv.textContent = content;
             chatHistory.appendChild(messageDiv);
             chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -109,6 +147,15 @@
             }, 3000);
         }
 
+        // 初始化完成后启用界面
+        function enableUI() {
+            loadingOverlay.style.display = 'none';
+            userInput.disabled = false;
+            sendButton.disabled = false;
+            userInput.focus();
+            addMessage('系统已就绪，请开始查询电影信息', 'assistant');
+        }
+
         // 发送消息
         async function sendMessage() {
             const message = userInput.value.trim();
@@ -119,6 +166,7 @@
 
             addMessage(message, 'user');
             userInput.value = '';
+            sendButton.disabled = true;
 
             try {
                 const response = await fetch('/api/chat', {
@@ -137,6 +185,9 @@
                 }
             } catch (error) {
                 showError('发送消息失败');
+            } finally {
+                sendButton.disabled = false;
+                userInput.focus();
             }
         }
 
@@ -146,6 +197,29 @@
             if (e.key === 'Enter') {
                 sendMessage();
             }
+        });
+
+        // 页面加载后执行初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/init_chat')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        enableUI();
+                    } else {
+                        throw new Error(data.message || '初始化失败');
+                    }
+                })
+                .catch(error => {
+                    loadingOverlay.innerHTML = `
+                        <div style="text-align: center; color: red;">
+                            <p>初始化错误: ${error.message}</p>
+                            <button onclick="window.location.reload()" style="padding: 8px 16px; margin-top: 10px;">
+                                刷新页面
+                            </button>
+                        </div>
+                    `;
+                });
         });
     </script>
 </body>
