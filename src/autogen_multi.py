@@ -226,10 +226,3 @@ def set_chat_route(app):
             return jsonify({'response': result})
         except Exception as e:
             return jsonify({'error': f"查询失败: {str(e)}"}), 500
-        
-
-    @app.route('/api/chat/history', methods=['GET'])
-    def _get_chat_history():
-        """获取聊天历史"""
-        return jsonify({'response': conversation_history})
-

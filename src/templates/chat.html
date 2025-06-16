@@ -91,21 +91,6 @@
         const sendButton = document.getElementById('send-button');
         const errorMessage = document.getElementById('error-message');
 
-        // 加载聊天历史
-        async function loadChatHistory() {
-            try {
-                const response = await fetch('/api/chat/history');
-                const data = await response.json();
-                chatHistory.innerHTML = '';
-                data.response.forEach(msg => {
-                    addMessage(msg.content, msg.role);
-                });
-                chatHistory.scrollTop = chatHistory.scrollHeight;
-            } catch (error) {
-                showError('加载聊天历史失败');
-            }
-        }
-
         // 添加消息到聊天历史
         function addMessage(content, role) {
             const messageDiv = document.createElement('div');
@@ -162,9 +147,6 @@
                 sendMessage();
             }
         });
-
-        // 初始化加载聊天历史
-        loadChatHistory();
     </script>
 </body>
 </html>
