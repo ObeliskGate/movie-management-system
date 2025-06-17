@@ -1,112 +1,19 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FilmHub 电影查询</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        #chat-container {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        #loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,255,255,0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            border-radius: 8px;
-        }
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #007bff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        #chat-history {
-            height: 400px;
-            overflow-y: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 20px;
-            background-color: #fafafa;
-        }
-        .message {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .user-message {
-            background-color: #e3f2fd;
-            margin-left: 20%;
-            margin-right: 10px;
-        }
-        .assistant-message {
-            background-color: #f5f5f5;
-            margin-right: 20%;
-            margin-left: 10px;
-        }
-        #input-container {
-            display: flex;
-            gap: 10px;
-        }
-        #user-input {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        #send-button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #send-button:hover {
-            background-color: #0056b3;
-        }
-        #send-button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        #error-message {
-            color: red;
-            margin-top: 10px;
-            display: none;
-        }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}FilmHub 电影查询{% endblock %}
+
+{% block navindex %}
+<a class="nav-link active" aria-current="page" href="{{ url_for('index')}}">主页</a>
+{% endblock %}
+
+{% block navtype %}
+<li class="nav-item">
+    <a class="nav-link disabled" href="#" tabindex="-1"
+        aria-disabled="true">已连接到{{server_type}}数据库，可在config.ini中设置切换</a>
+</li>
+{% endblock %}
+
+{% block content %}
+<div class="container">
     <h1>FilmHub 电影查询</h1>
     <div id="chat-container">
         <div id="loading-overlay">
@@ -121,106 +28,198 @@
         </div>
         <div id="error-message"></div>
     </div>
+</div>
 
-    <script>
-        const chatHistory = document.getElementById('chat-history');
-        const userInput = document.getElementById('user-input');
-        const sendButton = document.getElementById('send-button');
-        const errorMessage = document.getElementById('error-message');
-        const loadingOverlay = document.getElementById('loading-overlay');
+<style>
+    #chat-container {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        position: relative;
+        margin-top: 20px;
+    }
+    #loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        border-radius: 8px;
+    }
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    #chat-history {
+        height: 400px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 20px;
+        background-color: #fafafa;
+    }
+    .message {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .user-message {
+        background-color: #e3f2fd;
+        margin-left: 20%;
+        margin-right: 10px;
+    }
+    .assistant-message {
+        background-color: #f5f5f5;
+        margin-right: 20%;
+        margin-left: 10px;
+    }
+    #input-container {
+        display: flex;
+        gap: 10px;
+    }
+    #user-input {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    #send-button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    #send-button:hover {
+        background-color: #0056b3;
+    }
+    #send-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+    #error-message {
+        color: red;
+        margin-top: 10px;
+        display: none;
+    }
+</style>
 
-        // 添加消息到聊天历史
-        function addMessage(content, role) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${role}-message`;
-            messageDiv.textContent = content;
-            chatHistory.appendChild(messageDiv);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
+<script>
+    const chatHistory = document.getElementById('chat-history');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+    const errorMessage = document.getElementById('error-message');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    // 添加消息到聊天历史
+    function addMessage(content, role) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${role}-message`;
+        messageDiv.textContent = content;
+        chatHistory.appendChild(messageDiv);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    // 显示错误消息
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        setTimeout(() => {
+            errorMessage.style.display = 'none';
+        }, 3000);
+    }
+
+    // 初始化完成后启用界面
+    function enableUI() {
+        loadingOverlay.style.display = 'none';
+        userInput.disabled = false;
+        sendButton.disabled = false;
+        userInput.focus();
+        addMessage('系统已就绪，请开始查询电影信息', 'assistant');
+    }
+
+    // 发送消息
+    async function sendMessage() {
+        const message = userInput.value.trim();
+        if (!message) {
+            showError('请输入查询内容');
+            return;
         }
 
-        // 显示错误消息
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
-            setTimeout(() => {
-                errorMessage.style.display = 'none';
-            }, 3000);
-        }
+        addMessage(message, 'user');
+        userInput.value = '';
+        sendButton.disabled = true;
 
-        // 初始化完成后启用界面
-        function enableUI() {
-            loadingOverlay.style.display = 'none';
-            userInput.disabled = false;
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message }),
+            });
+            const data = await response.json();
+            
+            if (data.error) {
+                showError(data.error);
+            } else {
+                addMessage(data.response, 'assistant');
+            }
+        } catch (error) {
+            showError('发送消息失败');
+        } finally {
             sendButton.disabled = false;
             userInput.focus();
-            addMessage('系统已就绪，请开始查询电影信息', 'assistant');
         }
+    }
 
-        // 发送消息
-        async function sendMessage() {
-            const message = userInput.value.trim();
-            if (!message) {
-                showError('请输入查询内容');
-                return;
-            }
+    // 事件监听
+    sendButton.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
 
-            addMessage(message, 'user');
-            userInput.value = '';
-            sendButton.disabled = true;
-
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message }),
-                });
-                const data = await response.json();
-                
-                if (data.error) {
-                    showError(data.error);
+    // 页面加载后执行初始化
+    window.addEventListener('DOMContentLoaded', () => {
+        fetch('/api/init_chat')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    enableUI();
                 } else {
-                    addMessage(data.response, 'assistant');
+                    throw new Error(data.message || '初始化失败');
                 }
-            } catch (error) {
-                showError('发送消息失败');
-            } finally {
-                sendButton.disabled = false;
-                userInput.focus();
-            }
-        }
-
-        // 事件监听
-        sendButton.addEventListener('click', sendMessage);
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        // 页面加载后执行初始化
-        window.addEventListener('DOMContentLoaded', () => {
-            fetch('/api/init_chat')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        enableUI();
-                    } else {
-                        throw new Error(data.message || '初始化失败');
-                    }
-                })
-                .catch(error => {
-                    loadingOverlay.innerHTML = `
-                        <div style="text-align: center; color: red;">
-                            <p>初始化错误: ${error.message}</p>
-                            <button onclick="window.location.reload()" style="padding: 8px 16px; margin-top: 10px;">
-                                刷新页面
-                            </button>
-                        </div>
-                    `;
-                });
-        });
-    </script>
-</body>
-</html>
+            })
+            .catch(error => {
+                loadingOverlay.innerHTML = `
+                    <div style="text-align: center; color: red;">
+                        <p>初始化错误: ${error.message}</p>
+                        <button onclick="window.location.reload()" style="padding: 8px 16px; margin-top: 10px;">
+                            刷新页面
+                        </button>
+                    </div>
+                `;
+            });
+    });
+</script>
+{% endblock %}
