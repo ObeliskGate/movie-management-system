@@ -9,7 +9,6 @@ import configparser
 from autogen import AssistantAgent, UserProxyAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 
-from src.models import MovieInfo
 from src.init import get_db
 
 config = configparser.ConfigParser()
@@ -116,12 +115,20 @@ assistant = AssistantAgent(
 user_proxy = UserProxyAgent(
     name="User_proxy",
     human_input_mode="NEVER",  
-    is_termination_msg=lambda x: x.get("content", "").rstrip().lower() in ['退出', 'exit', 'quit', 'terminate'],
+    is_termination_msg=lambda x: x.get("tool_calls") is None,
     code_execution_config=False,
     llm_config={"config_list": config_list},
 )
 
-MOVIE_TABLE_NAME = MovieInfo.__tablename__ 
+MOVIE_TABLE_NAMES = [
+    "production_company",
+    "actor_info",
+    "director_info",
+    "movie_info",
+    "role_info",
+    "actor_movie_relation",
+    "director_movie_relation"
+]
 
 # 注册工具函数
 @user_proxy.register_for_execution()
@@ -133,22 +140,26 @@ def explore_database() -> str:
         with engine.connect() as con:
             # 获取表结构
             inspector = inspect(engine)
-            columns = inspector.get_columns(MOVIE_TABLE_NAME)
-            schema = f"Table name: {MOVIE_TABLE_NAME}\nTable Schema:\n" + "\n".join([f"- {col['name']}: {col['type']}" for col in columns])
-            
-            # 获取样本数据
-            result = con.execute(text(f"SELECT * FROM {MOVIE_TABLE_NAME} LIMIT 3"))
-            rows = result.fetchall()
-            
-            sample_data = "\nSample Data:\n"
-            if rows:
-                columns = result.keys()
-                sample_data += " | ".join(columns) + "\n"
-                sample_data += "-" * 50 + "\n"
-                for row in rows:
-                    sample_data += " | ".join(str(value) for value in row) + "\n"
-            
-            return f"{schema}\n\n{sample_data}"
+            ret = ""
+            for name in MOVIE_TABLE_NAMES:
+                columns = inspector.get_columns(name)
+                schema = f"Table name: {name}\nTable Schema:\n" + "\n".join([f"- {col['name']}: {col['type']}" for col in columns])
+                
+                # 获取样本数据
+                result = con.execute(text(f"SELECT * FROM {name} LIMIT 3"))
+                rows = result.fetchall()
+                
+                sample_data = f"\nSample Data from {name}:\n"
+                if rows:
+                    columns = result.keys()
+                    sample_data += " | ".join(columns) + "\n"
+                    sample_data += "-" * 50 + "\n"
+                    for row in rows:
+                        sample_data += " | ".join(str(value) for value in row) + "\n"
+
+                ret += f"{schema}\n\n{sample_data}\n\n"
+                
+            return ret.strip()
     except Exception as e:
         return f"""
             异常类型: {type(e)}
@@ -189,42 +200,25 @@ def query_database(query: str) -> str:
 
 
 async def get_reply(input: str, clear_history=False) -> str:
-    try:
-        # 清除历史记录（如果需要）
-        if clear_history:
-            user_proxy.reset()
-            assistant.reset()
-
-        # 初始化对话
+    try:    
+        len_before = len(list(user_proxy.chat_messages.values())[0])
         await user_proxy.a_initiate_chat(
             assistant,
             message=input,
-            max_turns=2,  # 默认2轮对话
-            clear_history=False,
+            clear_history=clear_history,
         )
+        after_list = list(user_proxy.chat_messages.values())[0]
+        get_content = lambda t: t.get("content", "No reply") if t else "No reply"
+        
+        contents = []
+        for it in after_list[len_before:]:
+            if it.get("role") != "user":
+                continue
+            current_content = get_content(it)
+            if current_content:
+                contents.append(current_content)
+        return "\n --- \n".join(contents)
 
-        # 检查是否调用了工具
-        tool_called = False
-        for msg in assistant.chat_messages[user_proxy]:
-            if "tool_calls" in msg and msg["tool_calls"]:
-                tool_called = True
-                break
-
-        # 获取助手的最后一条有效回复
-        def get_last_valid_message():
-            # 如果调用了工具，返回user_proxy的最后一条消息（包含执行结果）
-            if tool_called:
-                last_msg = user_proxy.last_message()
-                if last_msg and "content" in last_msg and last_msg["content"]:
-                    return last_msg["content"]
-            
-            # 否则返回助手的最后一条消息
-            for msg in reversed(assistant.chat_messages[user_proxy]):
-                if "content" in msg and msg["content"]:
-                    return msg["content"]
-            return "No reply"
-
-        return get_last_valid_message()
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -255,7 +249,7 @@ def set_chat_route(app):
         await user_proxy.a_initiate_chat(
             assistant,
             message="请预加载数据库中的数据",
-            max_turns=2,
+            # max_turns=2,
             clear_history=True,
         )
         return jsonify({"status": "success"})
