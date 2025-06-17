@@ -116,7 +116,7 @@ assistant = AssistantAgent(
 user_proxy = UserProxyAgent(
     name="User_proxy",
     human_input_mode="NEVER",  
-    is_termination_msg=lambda x: x.get("content", "").rstrip().lower() in ['退出', 'exit', 'quit', 'terminate'],
+    is_termination_msg=lambda x: x.get("tool_calls") is None,
     code_execution_config=False,
     llm_config={"config_list": config_list},
 )
@@ -189,42 +189,25 @@ def query_database(query: str) -> str:
 
 
 async def get_reply(input: str, clear_history=False) -> str:
-    try:
-        # 清除历史记录（如果需要）
-        if clear_history:
-            user_proxy.reset()
-            assistant.reset()
-
-        # 初始化对话
+    try:    
+        len_before = len(list(user_proxy.chat_messages.values())[0])
         await user_proxy.a_initiate_chat(
             assistant,
             message=input,
-            max_turns=2,  # 默认2轮对话
-            clear_history=False,
+            clear_history=clear_history,
         )
+        after_list = list(user_proxy.chat_messages.values())[0]
+        get_content = lambda t: t.get("content", "No reply") if t else "No reply"
+        
+        contents = []
+        for it in after_list[len_before:]:
+            if it.get("role") != "user":
+                continue
+            current_content = get_content(it)
+            if current_content:
+                contents.append(current_content)
+        return "\n --- \n".join(contents)
 
-        # 检查是否调用了工具
-        tool_called = False
-        for msg in assistant.chat_messages[user_proxy]:
-            if "tool_calls" in msg and msg["tool_calls"]:
-                tool_called = True
-                break
-
-        # 获取助手的最后一条有效回复
-        def get_last_valid_message():
-            # 如果调用了工具，返回user_proxy的最后一条消息（包含执行结果）
-            if tool_called:
-                last_msg = user_proxy.last_message()
-                if last_msg and "content" in last_msg and last_msg["content"]:
-                    return last_msg["content"]
-            
-            # 否则返回助手的最后一条消息
-            for msg in reversed(assistant.chat_messages[user_proxy]):
-                if "content" in msg and msg["content"]:
-                    return msg["content"]
-            return "No reply"
-
-        return get_last_valid_message()
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -255,7 +238,7 @@ def set_chat_route(app):
         await user_proxy.a_initiate_chat(
             assistant,
             message="请预加载数据库中的数据",
-            max_turns=2,
+            # max_turns=2,
             clear_history=True,
         )
         return jsonify({"status": "success"})
