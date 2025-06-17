@@ -48,6 +48,26 @@
                 </ul>
             </li>
             <li class="nav-item dropdown">
+                {% block navdirector %}
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                    aria-expanded="false">导演信息</a>
+                {% endblock %}
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('director')}}">所有条目</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('director_search')}}">搜索条目</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                {% block navrole %}
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                    aria-expanded="false">角色信息</a>
+                {% endblock %}
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('role') }}">所有条目</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('role_search') }}">搜索条目</a></li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
                 {% block navactor %}
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                     aria-expanded="false">演员信息</a>

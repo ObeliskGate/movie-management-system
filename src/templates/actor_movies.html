@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}演员出演电影{% endblock %}
+
+{% block navactor %}
+<a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+    aria-expanded="false">演员信息</a>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>演员 {{ actor_id }} 出演的电影</h2>
+    {% if actor %}
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">{{ actor.actor_name }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <p><strong>演员ID:</strong> {{ actor.actor_id }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>性别:</strong> {{ actor.gender }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>国家:</strong> {{ actor.country }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>电影ID</th>
+                    <th>电影名称</th>
+                    <th>角色名称</th>
+                    <th>上映日期</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movie in movies %}
+                <tr>
+                    <td>{{ movie.movie_id }}</td>
+                    <td>{{ movie.movie_name }}</td>
+                    <td>{{ movie.role_name }}</td>
+                    <td>{{ movie.release_date.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <a href="{{ url_for('movie_edit', movie_id=movie.movie_id) }}" 
+                           class="btn btn-sm btn-outline-primary">查看电影</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">该演员没有出演任何电影</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Director Info{% endblock %}
+
+{% block navdirector %}
+<a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+    aria-expanded="false">导演信息</a>
+{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="border-dark">
+            <tr>
+                <th>导演ID</th>
+                <th>导演姓名</th>
+                <th>性别</th>
+                <th>国家</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <form method="post">
+                <tr>
+                    {{ form.csrf_token }}{{ form.hidden_tag() }}
+                    <td scope="row">{{ form.director_id(class="form-control", placeholder="输入导演编号") }}</td>
+                    <td>{{ form.director_name(class="form-control", placeholder="输入姓名") }}</td>
+                    <td>{{ form.gender(class="form-control", placeholder="输入性别") }}</td>
+                    <td>{{ form.country(class="form-control", placeholder="输入国籍") }}</td>
+                    <td><button type="submit" class=" btn btn-outline-primary btn-sm text-nowrap">添加</button></td>
+                </tr>
+            </form>
+            {% for director in directors %}
+            <tr>
+                <td scope="row">{{ director.director_id }}</td>
+                <td>{{ director.director_name }}</td>
+                <td>{{ director.gender }}</td>
+                <td>{{ director.country }}</td>
+                <td>
+                    <div class="d-grid gap-1 d-md-flex justify-content-md">
+                        <a type="button" class="btn btn-outline-success btn-sm text-nowrap"
+                            href="{{ url_for('director_edit', director_id=director.director_id) }}">编辑</a>
+                        <a type="button" class="btn btn-outline-info btn-sm text-nowrap"
+                            href="{{ url_for('director_movies', director_id=director.director_id) }}">查看电影</a>
+                        <form method="post" action="{{ url_for('director_delete', director_id=director.director_id) }}"
+                            onsubmit="return confirm('确认删除吗？')">
+                            <button type="submit" class=" btn btn-outline-danger btn-sm text-nowrap">删除</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

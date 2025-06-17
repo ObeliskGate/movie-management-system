@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}角色详情{% endblock %}
+
+{% block navrole %}
+<a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+    aria-expanded="false">角色信息</a>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>角色详情</h2>
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">{{ role.role_name }}</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>基本信息</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>角色ID:</strong> {{ role.role_id }}</li>
+                        <li class="list-group-item"><strong>角色名称:</strong> {{ role.role_name }}</li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-6">
+                    <h5>关联信息</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>电影:</strong> 
+                            <a href="{{ url_for('movie_edit', movie_id=role.movie_id) }}">
+                                {{ role.movie.movie_name }} (ID: {{ role.movie_id }})
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>演员:</strong> 
+                            <a href="{{ url_for('actor_edit', actor_id=role.actor_id) }}">
+                                {{ role.actor.actor_name }} (ID: {{ role.actor_id }})
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="{{ url_for('role_edit', role_id=role.role_id) }}" class="btn btn-warning me-2">编辑角色</a>
+            <form method="post" action="{{ url_for('role_delete', role_id=role.role_id) }}" class="d-inline"
+                  onsubmit="return confirm('确认删除此角色吗？')">
+                <button class="btn btn-danger">删除角色</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

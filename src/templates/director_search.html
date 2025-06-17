@@ -1,0 +1,75 @@
+{% extends "director.html" %}
+
+{% block title %}导演搜索{% endblock %}
+
+{% block content %}
+<h1>搜索导演</h1>
+<form method="post" class="row g-3">
+    {{ form.csrf_token }}
+    {{ form.hidden_tag() }}
+
+    <div class="col-md-3">
+        {{ form.director_id.label(class="form-label") }}
+        {{ form.director_id(class="form-control", placeholder="导演ID") }}
+    </div>
+
+    <div class="col-md-3">
+        {{ form.director_name.label(class="form-label") }}
+        {{ form.director_name(class="form-control", placeholder="导演姓名") }}
+    </div>
+    
+    <div class="col-md-3">
+        {{ form.gender.label(class="form-label") }}
+        {{ form.gender(class="form-control", placeholder="性别") }}
+    </div>
+
+    <div class="col-md-3">
+        {{ form.country.label(class="form-label") }}
+        {{ form.country(class="form-control", placeholder="国家") }}
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">搜索</button>
+    </div>
+</form>
+
+{% if results %}
+<br>
+<h2>搜索结果 ({{ results|length }}条)</h2>
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>导演ID</th>
+                <th>导演姓名</th>
+                <th>性别</th>
+                <th>国家</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for director in results %}
+            <tr>
+                <td>{{ director.director_id }}</td>
+                <td>{{ director.director_name }}</td>
+                <td>{{ director.gender }}</td>
+                <td>{{ director.country }}</td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-sm btn-outline-success"
+                           href="{{ url_for('director_edit', director_id=director.director_id) }}">编辑</a>
+                        <a class="btn btn-sm btn-outline-info"
+                           href="{{ url_for('director_movies', director_id=director.director_id) }}">查看电影</a>
+                        <form method="post" action="{{ url_for('director_delete', director_id=director.director_id) }}"
+                              onsubmit="return confirm('确认删除吗？')">
+                            <button class="btn btn-sm btn-outline-danger">删除</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

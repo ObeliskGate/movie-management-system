@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}角色管理{% endblock %}
+
+{% block navrole %}
+<a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+    aria-expanded="false">角色信息</a>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>角色管理</h2>
+    
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>角色ID</th>
+                    <th>角色名称</th>
+                    <th>电影</th>
+                    <th>演员</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <form method="post">
+                    {{ form.csrf_token }}{{ form.hidden_tag() }}
+                    <tr>
+                        <td>{{ form.role_id(class="form-control", placeholder="角色ID") }}</td>
+                        <td>{{ form.role_name(class="form-control", placeholder="角色名称") }}</td>
+                        <td>{{ form.movie_id(class="form-control", placeholder="电影ID") }}</td>
+                        <td>{{ form.actor_id(class="form-control", placeholder="演员ID") }}</td>
+                        <td>
+                            <button type="submit" class="btn btn-outline-primary btn-sm">添加</button>
+                        </td>
+                    </tr>
+                </form>
+                
+                {% for role in roles %}
+                <tr>
+                    <td>{{ role.role_id }}</td>
+                    <td>{{ role.role_name }}</td>
+                    <td>
+                        <a href="{{ url_for('movie_edit', movie_id=role.movie_id) }}">
+                            {{ role.movie.movie_name }} (ID:{{ role.movie_id }})
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('actor_edit', actor_id=role.actor_id) }}">
+                            {{ role.actor.actor_name }} (ID:{{ role.actor_id }})
+                        </a>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="{{ url_for('role_edit', role_id=role.role_id) }}" 
+                               class="btn btn-sm btn-outline-success">编辑</a>
+                            <a href="{{ url_for('role_info', role_id=role.role_id) }}" 
+                               class="btn btn-sm btn-outline-info">详情</a>
+                            <form method="post" action="{{ url_for('role_delete', role_id=role.role_id) }}"
+                                  onsubmit="return confirm('确认删除此角色吗？')" class="d-inline">
+                                <button class="btn btn-sm btn-outline-danger">删除</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

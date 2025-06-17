@@ -1,0 +1,56 @@
+[file name]: role_edit.html
+[file content begin]
+{% extends "role.html" %}
+
+{% block title %}编辑角色{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>编辑角色</h2>
+    
+    <form method="post" class="row g-3">
+        {{ form.csrf_token }}
+        {{ form.hidden_tag() }}
+        
+        <div class="col-md-4">
+            <label class="form-label">角色ID</label>
+            <input class="form-control" value="{{ role.role_id }}" readonly>
+        </div>
+        
+        <div class="col-md-8">
+            {{ form.role_name.label(class="form-label") }}
+            {{ form.role_name(class="form-control") }}
+        </div>
+        
+        <div class="col-md-6">
+            {{ form.movie_id.label(class="form-label") }}
+            <select class="form-select" name="movie_id" required>
+                {% for movie in movies %}
+                <option value="{{ movie.movie_id }}" 
+                    {% if movie.movie_id == role.movie_id %}selected{% endif %}>
+                    {{ movie.movie_name }} (ID:{{ movie.movie_id }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="col-md-6">
+            {{ form.actor_id.label(class="form-label") }}
+            <select class="form-select" name="actor_id" required>
+                {% for actor in actors %}
+                <option value="{{ actor.actor_id }}" 
+                    {% if actor.actor_id == role.actor_id %}selected{% endif %}>
+                    {{ actor.actor_name }} (ID:{{ actor.actor_id }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">保存修改</button>
+            <a href="{{ url_for('role') }}" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+[file content end]
