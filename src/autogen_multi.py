@@ -188,18 +188,43 @@ def query_database(query: str) -> str:
 
 async def get_reply(input: str, clear_history=False) -> str:
     try:
+        # 清除历史记录（如果需要）
+        if clear_history:
+            user_proxy.reset()
+            assistant.reset()
+
+        # 初始化对话
         await user_proxy.a_initiate_chat(
             assistant,
             message=input,
-            max_turns=2,
-            clear_history=clear_history,  # Keep conversation history
+            max_turns=2,  # 默认2轮对话
+            clear_history=False,
         )
-        # Extract the assistant's reply
-        last_msg = user_proxy.last_message()
-        return last_msg.get("content", "No reply") if last_msg else "No reply"
+
+        # 检查是否调用了工具
+        tool_called = False
+        for msg in assistant.chat_messages[user_proxy]:
+            if "tool_calls" in msg and msg["tool_calls"]:
+                tool_called = True
+                break
+
+        # 获取助手的最后一条有效回复
+        def get_last_valid_message():
+            # 如果调用了工具，返回user_proxy的最后一条消息（包含执行结果）
+            if tool_called:
+                last_msg = user_proxy.last_message()
+                if last_msg and "content" in last_msg and last_msg["content"]:
+                    return last_msg["content"]
+            
+            # 否则返回助手的最后一条消息
+            for msg in reversed(assistant.chat_messages[user_proxy]):
+                if "content" in msg and msg["content"]:
+                    return msg["content"]
+            return "No reply"
+
+        return get_last_valid_message()
     except Exception as e:
         return f"Error: {str(e)}"
-
 
 
 def set_chat_route(app):
