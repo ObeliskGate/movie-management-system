@@ -3,6 +3,7 @@ from sqlalchemy import (
     inspect,
     text,
 )
+import configparser
 
 # 初始化AutoGen
 from autogen import AssistantAgent, UserProxyAgent
@@ -11,13 +12,14 @@ from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProx
 from src.models import MovieInfo
 from src.init import get_db
 
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-# 配置Qwen模型
 config_list = [
     {
-        "model": "qwen-plus",
-        "api_key": "sk-578dfc167ec94cc19e03d10c80f9a50a",
-        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+        "model": config.get('agent', 'model'),
+        "api_key": config.get('agent', 'api_key'),
+        "base_url": config.get('agent', 'base_url')
     }
 ]
 
