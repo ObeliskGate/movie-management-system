@@ -9,7 +9,6 @@ import configparser
 from autogen import AssistantAgent, UserProxyAgent
 from autogen.agentchat.contrib.retrieve_user_proxy_agent import RetrieveUserProxyAgent
 
-from src.models import MovieInfo
 from src.init import get_db
 
 config = configparser.ConfigParser()
@@ -121,7 +120,15 @@ user_proxy = UserProxyAgent(
     llm_config={"config_list": config_list},
 )
 
-MOVIE_TABLE_NAME = MovieInfo.__tablename__ 
+MOVIE_TABLE_NAMES = [
+    "production_company",
+    "actor_info",
+    "director_info",
+    "movie_info",
+    "role_info",
+    "actor_movie_relation",
+    "director_movie_relation"
+]
 
 # 注册工具函数
 @user_proxy.register_for_execution()
@@ -133,22 +140,26 @@ def explore_database() -> str:
         with engine.connect() as con:
             # 获取表结构
             inspector = inspect(engine)
-            columns = inspector.get_columns(MOVIE_TABLE_NAME)
-            schema = f"Table name: {MOVIE_TABLE_NAME}\nTable Schema:\n" + "\n".join([f"- {col['name']}: {col['type']}" for col in columns])
-            
-            # 获取样本数据
-            result = con.execute(text(f"SELECT * FROM {MOVIE_TABLE_NAME} LIMIT 3"))
-            rows = result.fetchall()
-            
-            sample_data = "\nSample Data:\n"
-            if rows:
-                columns = result.keys()
-                sample_data += " | ".join(columns) + "\n"
-                sample_data += "-" * 50 + "\n"
-                for row in rows:
-                    sample_data += " | ".join(str(value) for value in row) + "\n"
-            
-            return f"{schema}\n\n{sample_data}"
+            ret = ""
+            for name in MOVIE_TABLE_NAMES:
+                columns = inspector.get_columns(name)
+                schema = f"Table name: {name}\nTable Schema:\n" + "\n".join([f"- {col['name']}: {col['type']}" for col in columns])
+                
+                # 获取样本数据
+                result = con.execute(text(f"SELECT * FROM {name} LIMIT 3"))
+                rows = result.fetchall()
+                
+                sample_data = f"\nSample Data from {name}:\n"
+                if rows:
+                    columns = result.keys()
+                    sample_data += " | ".join(columns) + "\n"
+                    sample_data += "-" * 50 + "\n"
+                    for row in rows:
+                        sample_data += " | ".join(str(value) for value in row) + "\n"
+
+                ret += f"{schema}\n\n{sample_data}\n\n"
+                
+            return ret.strip()
     except Exception as e:
         return f"""
             异常类型: {type(e)}
