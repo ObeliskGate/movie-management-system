@@ -49,6 +49,10 @@ else:
     print('请填写config.ini选择数据库')
     exit()
 
+def get_db():
+    """Get the database instance."""
+    return db
+
 def db_connect_check():
     """数据库连接检查"""
     with app.app_context():

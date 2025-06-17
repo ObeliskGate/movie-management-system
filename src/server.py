@@ -3,6 +3,13 @@ from src.init import db_connect_check, app, db
 from src.models import *
 from src.pipeline import *
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from flask import render_template, redirect, url_for, flash
+from src.init import db_connect_check, app, db, server_type
+from src.models import *
+from src.pipeline import *
+from src.autogen_multi import set_chat_route
+
+set_chat_route(app)
 
 # 错误处理
 @app.errorhandler(IntegrityError)
