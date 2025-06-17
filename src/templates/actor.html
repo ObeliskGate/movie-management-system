@@ -39,11 +39,14 @@
                 <td>{{ actor.gender }}</td>
                 <td>{{ actor.country }}</td>
                 <td>
-                    <!-- 编辑 -->
                     <div class="d-grid gap-1 d-md-flex justify-content-md">
                         <a type="button" class="btn btn-outline-success btn-sm text-nowrap"
                             href="{{ url_for('actor_edit', actor_id=actor.actor_id) }}">编辑</a>
-                        <!-- 删除 -->
+                        
+                        <!-- 添加的查看电影链接 -->
+                        <a type="button" class="btn btn-outline-info btn-sm text-nowrap"
+                            href="{{ url_for('actor_movies', actor_id=actor.actor_id) }}">查看电影</a>
+                        
                         <form method="post" action="{{ url_for('actor_delete', actor_id=actor.actor_id) }}"
                             onsubmit="return confirm('确认删除吗？这将对应删除actor_actor_relation同一演员信息')">
                             <button type="submit" class=" btn btn-outline-danger btn-sm text-nowrap">删除</button>

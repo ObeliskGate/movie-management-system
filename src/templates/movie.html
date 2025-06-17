@@ -12,9 +12,14 @@
     <table class="table table-hover align-middle">
         <thead class="border-dark">
             <tr>
-                {% for column in movies_col %}
-                <th scope="col">{{ column }}</th>
-                {% endfor %}
+                <th>电影ID</th>
+                <th>电影名称</th>
+                <th>上映日期</th>
+                <th>国家</th>
+                <th>类型</th>
+                <th>年份</th>
+                <th>出品公司</th>
+                <th>操作</th>
             </tr>
         </thead>
         <tbody>
@@ -26,8 +31,9 @@
                     <td>{{ form.movie_name(class="form-control", placeholder="输入电影名称") }}</td>
                     <td>{{ form.release_date(class="form-control", placeholder="输入发行日期") }}</td>
                     <td>{{ form.country(class="form-control", placeholder="输入制片国家") }}</td>
-                    <td>{{ form.type(class="form-control", placeholder="输入电影类型") }}
+                    <td>{{ form.type(class="form-control", placeholder="输入电影类型") }}</td>
                     <td><input class="form-control" placeholder="自动读取" disabled readonly></td>
+                    <td>{{ form.company_id(class="form-control", placeholder="出品公司ID") }}</td>
                     <td><button type="submit" class=" btn btn-outline-primary btn-sm text-nowrap">添加</button></td>
                 </tr>
             </form>
@@ -35,10 +41,11 @@
             <tr>
                 <td scope="row">{{ movie.movie_id }}</td>
                 <td>{{ movie.movie_name }}</td>
-                <td>{{ movie.release_date }}</td>
+                <td>{{ movie.release_date.strftime('%Y-%m-%d') }}</td>
                 <td>{{ movie.country }}</td>
                 <td>{{ movie.type }}</td>
                 <td>{{ movie.year }}</td>
+                <td>{{ movie.production_company.company_name if movie.production_company else '' }}</td>
                 <td>
                     <!-- 编辑 -->
                     <div class="d-grid gap-1 d-md-flex justify-content-md-end">
@@ -46,7 +53,7 @@
                             href="{{ url_for('movie_edit', movie_id=movie.movie_id) }}">编辑</a>
                         <!-- 删除 -->
                         <form method="post" action="{{ url_for('movie_delete', movie_id=movie.movie_id) }}"
-                            onsubmit="return confirm('确认删除吗？这将对应删除movie_actor_relation同一电影信息')">
+                            onsubmit="return confirm('确认删除吗？这将删除所有相关记录')">
                             <button type="submit" class=" btn btn-outline-danger btn-sm text-nowrap">删除</button>
                         </form>
                     </div>
@@ -56,6 +63,4 @@
         </tbody>
     </table>
 </div>
-
-
 {% endblock %}

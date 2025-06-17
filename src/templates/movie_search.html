@@ -1,41 +1,48 @@
 {% extends "movie.html" %}
 
-
 {% block content %}
-<h1>搜索条目</h1>
-<!-- align-items-center -->
+<h1>搜索电影</h1>
 <form method="post" class="row g-3">
     {{ form.csrf_token }}
     {{ form.hidden_tag() }}
 
-    <div class="col-md-6">
+    <div class="col-md-3">
         {{ form.movie_id.label(class="form-label") }}
-        {{ form.movie_id(class="form-control", placeholder="输入电影编号") }}
+        {{ form.movie_id(class="form-control", placeholder="电影ID") }}
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-3">
         {{ form.movie_name.label(class="form-label") }}
-        {{ form.movie_name(class="form-control", placeholder="输入电影名称") }}
+        {{ form.movie_name(class="form-control", placeholder="电影名称") }}
     </div>
-    <div class="col-md-3">
-        {{ form.release_date.label(class="form-label")}}
-        {{ form.release_date(class="form-control", placeholder="输入发行日期") }}
-    </div>
-
-    <!-- 自动根据release_date填写 -->
-    <div class="col-md-3">
-        {{ form.year.label(class="form-label")}}
-        {{ form.year(class="form-control", placeholder="输入发行年份") }}
-    </div>
-
+    
     <div class="col-md-3">
         {{ form.country.label(class="form-label") }}
-        {{ form.country(class="form-control", placeholder="输入制片国家") }}
+        {{ form.country(class="form-control", placeholder="国家") }}
     </div>
 
     <div class="col-md-3">
         {{ form.type.label(class="form-label") }}
-        {{ form.type(class="form-control", placeholder="输入电影类型") }}
+        {{ form.type(class="form-control", placeholder="类型") }}
+    </div>
+    
+    <div class="col-md-6">
+        {{ form.company_id.label(class="form-label") }}
+        <select class="form-select" name="company_id">
+            <option value="">所有公司</option>
+            {% for company in companies %}
+            <option value="{{ company.company_id }}">{{ company.company_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">年份范围</label>
+        <div class="input-group">
+            <input type="number" class="form-control" name="year_from" placeholder="开始年份">
+            <span class="input-group-text">-</span>
+            <input type="number" class="form-control" name="year_to" placeholder="结束年份">
+        </div>
     </div>
 
     <div class="col-12">
@@ -45,34 +52,38 @@
 
 {% if results %}
 <br>
-<h1>搜索结果</h1>
+<h2>搜索结果 ({{ results|length }}条)</h2>
 <div class="table-responsive">
     <table class="table table-hover align-middle">
-        <thead class="border-dark">
+        <thead>
             <tr>
-                {% for column in movies_col %}
-                <th scope="col">{{ column }}</th>
-                {% endfor %}
+                <th>ID</th>
+                <th>电影名称</th>
+                <th>上映日期</th>
+                <th>国家</th>
+                <th>类型</th>
+                <th>年份</th>
+                <th>出品公司</th>
+                <th>操作</th>
             </tr>
         </thead>
         <tbody>
             {% for movie in results %}
             <tr>
-                <td scope="row">{{ movie.movie_id }}</td>
+                <td>{{ movie.movie_id }}</td>
                 <td>{{ movie.movie_name }}</td>
-                <td>{{ movie.release_date }}</td>
+                <td>{{ movie.release_date.strftime('%Y-%m-%d') }}</td>
                 <td>{{ movie.country }}</td>
                 <td>{{ movie.type }}</td>
                 <td>{{ movie.year }}</td>
+                <td>{{ movie.production_company.company_name if movie.production_company else '' }}</td>
                 <td>
-                    <!-- 编辑 -->
-                    <div class="d-grid gap-1 d-md-flex justify-content-md-end">
-                        <a type="button" class="btn btn-outline-success btn-sm"
-                            href="{{ url_for('movie_edit', movie_id=movie.movie_id) }}">编辑</a>
-                        <!-- 删除 -->
+                    <div class="btn-group">
+                        <a class="btn btn-sm btn-outline-success"
+                           href="{{ url_for('movie_edit', movie_id=movie.movie_id) }}">编辑</a>
                         <form method="post" action="{{ url_for('movie_delete', movie_id=movie.movie_id) }}"
-                            onsubmit="return confirm('确认删除吗？这将对应删除movie_actor_relation同一电影信息')">
-                            <button type="submit" class=" btn btn-outline-danger btn-sm">删除</button>
+                              onsubmit="return confirm('确认删除吗？')">
+                            <button class="btn btn-sm btn-outline-danger">删除</button>
                         </form>
                     </div>
                 </td>

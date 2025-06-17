@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}导演执导电影{% endblock %}
+
+{% block navdirector %}
+<a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+    aria-expanded="false">导演信息</a>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>导演 {{ director_id }} 执导的电影</h2>
+    {% if director %}
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">{{ director.director_name }}</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <p><strong>导演ID:</strong> {{ director.director_id }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>性别:</strong> {{ director.gender }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p><strong>国家:</strong> {{ director.country }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>电影ID</th>
+                    <th>电影名称</th>
+                    <th>上映日期</th>
+                    <th>国家</th>
+                    <th>类型</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for movie in movies %}
+                <tr>
+                    <td>{{ movie.movie_id }}</td>
+                    <td>{{ movie.movie_name }}</td>
+                    <td>{{ movie.release_date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ movie.country }}</td>
+                    <td>{{ movie.type }}</td>
+                    <td>
+                        <a href="{{ url_for('movie_edit', movie_id=movie.movie_id) }}" 
+                           class="btn btn-sm btn-outline-primary">查看电影</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">该导演没有执导任何电影</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
