@@ -1,52 +1,61 @@
-{% extends "movie.html" %}
+{% extends "base.html" %}
 
-{% block title %}Edit Movie{% endblock %}
+{% block title %}编辑电影信息{% endblock %}
+
+{% block navmovie %}
+<a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+    aria-expanded="false">电影信息</a>
+{% endblock %}
 
 {% block content %}
-<h1>编辑电影</h1>
-<form method="post" class="row g-3">
-    {{ form.csrf_token }}
-    {{ form.hidden_tag() }}
+<div class="container">
+    <h2>编辑电影信息</h2>
     
-    <div class="col-md-3">
-        <label class="form-label">电影ID</label>
-        <input class="form-control" value="{{ movie.movie_id }}" readonly>
-    </div>
-
-    <div class="col-md-9">
-        {{ form.movie_name.label(class="form-label") }}
-        {{ form.movie_name(class="form-control") }}
-    </div>
-    
-    <div class="col-md-4">
-        {{ form.release_date.label(class="form-label")}}
-        {{ form.release_date(class="form-control") }}
-    </div>
-
-    <div class="col-md-4">
-        {{ form.country.label(class="form-label") }}
-        {{ form.country(class="form-control") }}
-    </div>
-
-    <div class="col-md-4">
-        {{ form.type.label(class="form-label") }}
-        {{ form.type(class="form-control") }}
-    </div>
-    
-    <div class="col-md-12">
-        {{ form.company_id.label(class="form-label") }}
-        <select class="form-select" name="company_id">
-            {% for company in companies %}
-            <option value="{{ company.company_id }}" 
-                {% if company.company_id == movie.company_id %}selected{% endif %}>
-                {{ company.company_name }}
-            </option>
-            {% endfor %}
-        </select>
-    </div>
-
-    <div class="col-12">
-        <button type="submit" class="btn btn-primary">提交修改</button>
-    </div>
-</form>
+    <form method="post" class="row g-3">
+        {{ form.csrf_token }}
+        {{ form.hidden_tag() }}
+        
+        <div class="col-md-3">
+            <label class="form-label">电影ID</label>
+            <input class="form-control" value="{{ movie.movie_id }}" readonly>
+        </div>
+        
+        <div class="col-md-9">
+            {{ form.movie_name.label(class="form-label") }}
+            {{ form.movie_name(class="form-control", placeholder="输入电影名称") }}
+        </div>
+        
+        <div class="col-md-4">
+            {{ form.release_date.label(class="form-label") }}
+            {{ form.release_date(class="form-control") }}
+        </div>
+        
+        <div class="col-md-4">
+            {{ form.country.label(class="form-label") }}
+            {{ form.country(class="form-control", placeholder="输入国家") }}
+        </div>
+        
+        <div class="col-md-4">
+            {{ form.type.label(class="form-label") }}
+            {{ form.type(class="form-control", placeholder="输入类型") }}
+        </div>
+        
+        <div class="col-md-6">
+            {{ form.company_id.label(class="form-label") }}
+            <select class="form-select" name="company_id">
+                {% for company in companies %}
+                <option value="{{ company.company_id }}"
+                        {% if company.company_id == movie.company_id %}selected{% endif %}>
+                    {{ company.company_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary me-2">提交修改</button>
+            <a href="{{ url_for('movie') }}" class="btn btn-secondary">取消</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

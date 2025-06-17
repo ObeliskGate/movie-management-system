@@ -43,53 +43,49 @@ def movie():
 def movie_edit(movie_id):
     movie = MovieInfo.query.get_or_404(movie_id)
     form = MovieEditForm(obj=movie)
-    # 设置ID字段为只读
-    form.movie_id.render_kw = {'readonly': True}
     actors = ActorInfo.query.all()
     directors = DirectorInfo.query.all()
-    # 预填充演员和导演ID列表
+    
     if request.method == 'GET':
+        # 初始化多选字段
         form.actor_ids.data = ','.join(str(a.actor_id) for a in movie.actors)
         form.director_ids.data = ','.join(str(d.director_id) for d in movie.directors)
     
     if form.validate_on_submit():
-        # 更新基本电影信息
-        movie.movie_id = form.movie_id.data
-        movie.movie_name = form.movie_name.data
-        movie.release_date = form.release_date.data
-        movie.country = form.country.data
-        movie.type = form.type.data
-        movie.year = form.release_date.data.year
-        movie.company_id = form.company_id.data
-        
-        # 更新演员关系
-        movie.actors = []
-        if form.actor_ids.data:
-            actor_ids = [int(id.strip()) for id in form.actor_ids.data.split(',') if id.strip()]
-            for actor_id in actor_ids:
-                actor = ActorInfo.query.get(actor_id)
-                if not actor:
-                    flash(f"演员ID {actor_id} 不存在", "danger")
-                    return render_template('movie_edit.html', form=form, movie=movie)
-                movie.actors.append(actor)
-        
-        # 更新导演关系
-        movie.directors = []
-        if form.director_ids.data:
-            director_ids = [int(id.strip()) for id in form.director_ids.data.split(',') if id.strip()]
-            for director_id in director_ids:
-                director = DirectorInfo.query.get(director_id)
-                if not director:
-                    flash(f"导演ID {director_id} 不存在", "danger")
-                    return render_template('movie_edit.html', form=form, movie=movie)
-                movie.directors.append(director)
-        
         try:
+            # 更新基本电影信息
+            movie.movie_name = form.movie_name.data
+            movie.release_date = form.release_date.data
+            movie.country = form.country.data
+            movie.type = form.type.data
+            movie.year = form.release_date.data.year
+            movie.company_id = form.company_id.data
+            
+            # 清除并重建演员关系
+            movie.actors = []
+            if form.actor_ids.data:
+                actor_ids = [int(id.strip()) for id in form.actor_ids.data.split(',') if id.strip()]
+                for actor_id in actor_ids:
+                    actor = ActorInfo.query.get(actor_id)
+                    if actor:
+                        movie.actors.append(actor)
+            
+            # 清除并重建导演关系
+            movie.directors = []
+            if form.director_ids.data:
+                director_ids = [int(id.strip()) for id in form.director_ids.data.split(',') if id.strip()]
+                for director_id in director_ids:
+                    director = DirectorInfo.query.get(director_id)
+                    if director:
+                        movie.directors.append(director)
+            
+            # 关键：提交到数据库
             db.session.commit()
             flash(f'成功修改电影 {movie.movie_name} (ID:{movie_id})', 'success')
             return redirect(url_for('movie'))
-        except IntegrityError:
-            flash('修改失败：ID冲突或数据错误', 'danger')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'修改失败: {str(e)}', 'danger')
     
     return render_template('movie_edit.html', form=form, movie=movie,
                           actors=actors, directors=directors)
@@ -124,13 +120,20 @@ def actor():
 def actor_edit(actor_id):
     actor = ActorInfo.query.get_or_404(actor_id)
     form = ActorEditForm(obj=actor)
-    # 设置ID字段为只读
-    form.actor_id.render_kw = {'readonly': True}
+    
     if form.validate_on_submit():
-        form.populate_obj(actor)
-        db.session.commit()
-        flash(f'成功修改演员 {actor.actor_name} (ID:{actor_id})', 'success')
-        return redirect(url_for('actor'))
+        try:
+            # 更新属性
+            form.populate_obj(actor)  # 使用populate_obj自动填充
+            
+            # 关键：提交到数据库
+            db.session.commit()
+            flash('演员信息更新成功', 'success')
+            return redirect(url_for('actor'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'更新失败: {str(e)}', 'danger')
+    
     return render_template('actor_edit.html', form=form, actor=actor)
 
 @app.route('/actor_delete/<int:actor_id>', methods=['POST'])
@@ -160,16 +163,23 @@ def director():
     return render_template('director.html', form=form)
 
 @app.route('/director_edit/<int:director_id>', methods=['GET', 'POST'])
+@app.route('/director_edit/<int:director_id>', methods=['GET', 'POST'])
 def director_edit(director_id):
     director = DirectorInfo.query.get_or_404(director_id)
     form = DirectorEditForm(obj=director)
-    # 设置ID字段为只读
-    form.director_id.render_kw = {'readonly': True}
+    
     if form.validate_on_submit():
-        form.populate_obj(director)
-        db.session.commit()
-        flash(f'成功修改导演 {director.director_name} (ID:{director_id})', 'success')
-        return redirect(url_for('director'))
+        try:
+            director.director_name = form.director_name.data
+            director.gender = form.gender.data
+            director.country = form.country.data
+            db.session.commit()
+            flash('导演信息更新成功', 'success')
+            return redirect(url_for('director'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'更新失败: {str(e)}', 'danger')
+    
     return render_template('director_edit.html', form=form, director=director)
 
 @app.route('/director_delete/<int:director_id>', methods=['POST'])
@@ -202,13 +212,17 @@ def company():
 def company_edit(company_id):
     company = ProductionCompany.query.get_or_404(company_id)
     form = CompanyEditForm(obj=company)
-    # 设置ID字段为只读
-    form.company_id.render_kw = {'readonly': True}
+    
     if form.validate_on_submit():
-        form.populate_obj(company)
-        db.session.commit()
-        flash(f'成功修改出品公司 {company.company_name} (ID:{company_id})', 'success')
-        return redirect(url_for('company'))
+        try:
+            form.populate_obj(company)
+            db.session.commit()
+            flash(f'成功修改出品公司 {company.company_name} (ID:{company_id})', 'success')
+            return redirect(url_for('company'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'更新失败: {str(e)}', 'danger')
+    
     return render_template('company_edit.html', form=form, company=company)
 
 @app.route('/company_delete/<int:company_id>', methods=['POST'])
@@ -241,14 +255,39 @@ def role():
 def role_edit(role_id):
     role = RoleInfo.query.get_or_404(role_id)
     form = RoleEditForm(obj=role)
-    # 设置ID字段为只读
-    form.role_id.render_kw = {'readonly': True}
+    movies = MovieInfo.query.all()
+    actors = ActorInfo.query.all()
+    
     if form.validate_on_submit():
-        form.populate_obj(role)
-        db.session.commit()
-        flash(f'成功修改角色 {role.role_name} (ID:{role_id})', 'success')
-        return redirect(url_for('role'))
-    return render_template('role_edit.html', form=form, role=role)
+        try:
+            # 检查电影和演员是否存在
+            movie = MovieInfo.query.get(form.movie_id.data)
+            actor = ActorInfo.query.get(form.actor_id.data)
+            
+            if not movie:
+                flash(f"电影ID {form.movie_id.data} 不存在", "danger")
+                return redirect(url_for('role_edit', role_id=role_id))
+            if not actor:
+                flash(f"演员ID {form.actor_id.data} 不存在", "danger")
+                return redirect(url_for('role_edit', role_id=role_id))
+            
+            # 更新角色信息
+            role.movie_id = form.movie_id.data
+            role.actor_id = form.actor_id.data
+            role.role_name = form.role_name.data
+            
+            db.session.commit()
+            flash('角色信息更新成功', 'success')
+            return redirect(url_for('role'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'更新失败: {str(e)}', 'danger')
+    
+    return render_template('role_edit.html', 
+                          form=form, 
+                          role=role,
+                          movies=movies,
+                          actors=actors)
 
 @app.route('/role_delete/<int:role_id>', methods=['POST'])
 def role_delete(role_id):

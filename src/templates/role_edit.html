@@ -1,8 +1,11 @@
-[file name]: role_edit.html
-[file content begin]
-{% extends "role.html" %}
+{% extends "base.html" %}
 
 {% block title %}编辑角色{% endblock %}
+
+{% block navrole %}
+<a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
+    aria-expanded="false">角色信息</a>
+{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -25,10 +28,10 @@
         <div class="col-md-6">
             {{ form.movie_id.label(class="form-label") }}
             <select class="form-select" name="movie_id" required>
-                {% for movie in movies %}
-                <option value="{{ movie.movie_id }}" 
-                    {% if movie.movie_id == role.movie_id %}selected{% endif %}>
-                    {{ movie.movie_name }} (ID:{{ movie.movie_id }})
+                {% for m in movies %}
+                <option value="{{ m.movie_id }}" 
+                    {% if m.movie_id == role.movie_id %}selected{% endif %}>
+                    {{ m.movie_name }} (ID:{{ m.movie_id }})
                 </option>
                 {% endfor %}
             </select>
@@ -37,10 +40,10 @@
         <div class="col-md-6">
             {{ form.actor_id.label(class="form-label") }}
             <select class="form-select" name="actor_id" required>
-                {% for actor in actors %}
-                <option value="{{ actor.actor_id }}" 
-                    {% if actor.actor_id == role.actor_id %}selected{% endif %}>
-                    {{ actor.actor_name }} (ID:{{ actor.actor_id }})
+                {% for a in actors %}
+                <option value="{{ a.actor_id }}" 
+                    {% if a.actor_id == role.actor_id %}selected{% endif %}>
+                    {{ a.actor_name }} (ID:{{ a.actor_id }})
                 </option>
                 {% endfor %}
             </select>
@@ -50,31 +53,6 @@
             <button type="submit" class="btn btn-primary">保存修改</button>
             <a href="{{ url_for('role') }}" class="btn btn-secondary">取消</a>
         </div>
-        
-        <div class="col-md-6 mt-3">
-            <label class="form-label">选择演员</label>
-            <select class="form-select" name="actor_ids" multiple>
-                {% for actor in actors %}
-                <option value="{{ actor.actor_id }}"
-                    {% if actor in movie.actors %}selected{% endif %}>
-                    {{ actor.actor_name }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="col-md-6 mt-3">
-            <label class="form-label">选择导演</label>
-            <select class="form-select" name="director_ids" multiple>
-                {% for director in directors %}
-                <option value="{{ director.director_id }}"
-                    {% if director in movie.directors %}selected{% endif %}>
-                    {{ director.director_name }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
     </form>
 </div>
 {% endblock %}
-[file content end]

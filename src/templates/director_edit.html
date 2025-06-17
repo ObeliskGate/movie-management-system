@@ -1,34 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %}编辑演员信息{% endblock %}
+{% block title %}编辑导演信息{% endblock %}
 
-{% block navactor %}
+{% block navdirector %}
 <a class="nav-link dropdown-toggle active" data-bs-toggle="dropdown" href="#" role="button"
-    aria-expanded="false">演员信息</a>
+    aria-expanded="false">导演信息</a>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <h2>编辑演员信息</h2>
+    <h2>编辑导演信息</h2>
     
     <form method="post" class="row g-3">
         {{ form.csrf_token }}
         {{ form.hidden_tag() }}
         
         <div class="col-md-3">
-            <label class="form-label">演员ID</label>
-            <input class="form-control" value="{{ actor.actor_id }}" readonly>
+            <label class="form-label">导演ID</label>
+            <input class="form-control" value="{{ director.director_id }}" readonly>
         </div>
         
         <div class="col-md-3">
-            {{ form.actor_name.label(class="form-label") }}
-            {{ form.actor_name(class="form-control", placeholder="输入姓名") }}
+            {{ form.director_name.label(class="form-label") }}
+            {{ form.director_name(class="form-control", placeholder="输入姓名") }}
         </div>
         
         <div class="col-md-3">
-            <!-- 修改点：将gender改为type -->
-            {{ form.type.label(class="form-label") }}
-            {{ form.type(class="form-control", placeholder="输入类型") }}
+            {{ form.gender.label(class="form-label") }}
+            {{ form.gender(class="form-control", placeholder="输入性别") }}
         </div>
         
         <div class="col-md-3">
@@ -38,7 +37,7 @@
         
         <div class="col-12">
             <button type="submit" class="btn btn-primary me-2">提交修改</button>
-            <a href="{{ url_for('actor') }}" class="btn btn-secondary">取消</a>
+            <a href="{{ url_for('director') }}" class="btn btn-secondary">取消</a>
         </div>
     </form>
 </div>
