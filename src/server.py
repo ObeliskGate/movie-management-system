@@ -28,13 +28,16 @@ def handle_db_error(e):
 @app.route('/movie', methods=['GET', 'POST'])
 def movie():
     form = MovieForm()
+    actors = ActorInfo.query.all()
+    directors = DirectorInfo.query.all()
     # 移除ID字段验证
-    del form.movie_id
+    #del form.movie_id
     if form.validate_on_submit():
         flag, message = movie_add_pipeline(form)
         flash(message, 'success' if flag else 'danger')
         return redirect(url_for('movie'))
-    return render_template('movie.html', form=form)
+    return render_template('movie.html', form=form, 
+                          actors=actors, directors=directors)
 
 @app.route('/movie_edit/<int:movie_id>', methods=['GET', 'POST'])
 def movie_edit(movie_id):
@@ -42,6 +45,8 @@ def movie_edit(movie_id):
     form = MovieEditForm(obj=movie)
     # 设置ID字段为只读
     form.movie_id.render_kw = {'readonly': True}
+    actors = ActorInfo.query.all()
+    directors = DirectorInfo.query.all()
     # 预填充演员和导演ID列表
     if request.method == 'GET':
         form.actor_ids.data = ','.join(str(a.actor_id) for a in movie.actors)
@@ -86,7 +91,8 @@ def movie_edit(movie_id):
         except IntegrityError:
             flash('修改失败：ID冲突或数据错误', 'danger')
     
-    return render_template('movie_edit.html', form=form, movie=movie)
+    return render_template('movie_edit.html', form=form, movie=movie,
+                          actors=actors, directors=directors)
 
 @app.route('/movie_delete/<int:movie_id>', methods=['POST'])
 def movie_delete(movie_id):
@@ -107,7 +113,7 @@ def movie_search():
 def actor():
     form = ActorForm()
     # 移除ID字段验证
-    del form.actor_id
+    #del form.actor_id
     if form.validate_on_submit():
         flag, message = actor_add_pipeline(form)
         flash(message, 'success' if flag else 'danger')
@@ -146,7 +152,7 @@ def actor_search():
 def director():
     form = DirectorForm()
     # 移除ID字段验证
-    del form.director_id
+    #del form.director_id
     if form.validate_on_submit():
         flag, message = director_add_pipeline(form)
         flash(message, 'success' if flag else 'danger')
@@ -185,7 +191,7 @@ def director_search():
 def company():
     form = CompanyForm()
     # 移除ID字段验证
-    del form.company_id
+    #del form.company_id
     if form.validate_on_submit():
         flag, message = company_add_pipeline(form)
         flash(message, 'success' if flag else 'danger')
@@ -224,7 +230,7 @@ def company_search():
 def role():
     form = RoleForm()
     # 移除ID字段验证
-    del form.role_id
+    #del form.role_id
     if form.validate_on_submit():
         flag, message = role_add_pipeline(form)
         flash(message, 'success' if flag else 'danger')

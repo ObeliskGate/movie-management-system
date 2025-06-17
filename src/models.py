@@ -177,9 +177,6 @@ class MovieForm(FlaskForm):
     country = StringField('国家', validators=[InputRequired(),Length(max=20)])
     type = StringField('类型', validators=[InputRequired()])
     company_id = IntegerField('出品公司ID', validators=[InputRequired()])
-    # 可选字段：演员ID列表和导演ID列表
-    actor_ids = StringField('演员ID列表（多个用逗号分隔）', validators=[Optional()])
-    director_ids = StringField('导演ID列表（多个用逗号分隔）', validators=[Optional()])
 
 class MovieSearchForm(FlaskForm):   
     movie_id = IntegerField('电影ID', validators=[Optional()])

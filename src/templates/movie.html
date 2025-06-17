@@ -27,13 +27,35 @@
                 {{ form.error }}
                 <tr>
                     {{ form.csrf_token }}{{ form.hidden_tag() }}
-                    <td scope="row">{{ form.movie_id(class="form-control", placeholder="输入电影编号") }}</td>
+                    <td scope="row"></td>
                     <td>{{ form.movie_name(class="form-control", placeholder="输入电影名称") }}</td>
                     <td>{{ form.release_date(class="form-control", placeholder="输入发行日期") }}</td>
                     <td>{{ form.country(class="form-control", placeholder="输入制片国家") }}</td>
                     <td>{{ form.type(class="form-control", placeholder="输入电影类型") }}</td>
                     <td><input class="form-control" placeholder="自动读取" disabled readonly></td>
-                    <td>{{ form.company_id(class="form-control", placeholder="出品公司ID") }}</td>
+                    <td>
+                        {{ form.company_id(class="form-select") }}
+                    </td>
+
+                    <!-- 添加新的选择框 -->
+                    <tr>
+                        <td colspan="2">
+                            <label class="form-label">选择演员</label>
+                            <select class="form-select" name="actor_ids" multiple>
+                                {% for actor in actors %}
+                                <option value="{{ actor.actor_id }}">{{ actor.actor_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td colspan="2">
+                            <label class="form-label">选择导演</label>
+                            <select class="form-select" name="director_ids" multiple>
+                                {% for director in directors %}
+                                <option value="{{ director.director_id }}">{{ director.director_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                    </tr>
                     <td><button type="submit" class=" btn btn-outline-primary btn-sm text-nowrap">添加</button></td>
                 </tr>
             </form>

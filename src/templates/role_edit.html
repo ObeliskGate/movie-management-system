@@ -50,6 +50,30 @@
             <button type="submit" class="btn btn-primary">保存修改</button>
             <a href="{{ url_for('role') }}" class="btn btn-secondary">取消</a>
         </div>
+        
+        <div class="col-md-6 mt-3">
+            <label class="form-label">选择演员</label>
+            <select class="form-select" name="actor_ids" multiple>
+                {% for actor in actors %}
+                <option value="{{ actor.actor_id }}"
+                    {% if actor in movie.actors %}selected{% endif %}>
+                    {{ actor.actor_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-6 mt-3">
+            <label class="form-label">选择导演</label>
+            <select class="form-select" name="director_ids" multiple>
+                {% for director in directors %}
+                <option value="{{ director.director_id }}"
+                    {% if director in movie.directors %}selected{% endif %}>
+                    {{ director.director_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
     </form>
 </div>
 {% endblock %}
