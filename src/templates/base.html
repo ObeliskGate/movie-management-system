@@ -5,134 +5,256 @@
     <meta charset="UTF-8">
     <!-- 自适应页面宽度 -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="">
-    <meta name="description" content="">
+    <meta name="keywords" content="FilmHub, 电影管理系统">
+    <meta name="description" content="现代化的电影信息管理系统">
     <!-- 加载bootstrap的css -->
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="/static/bootstrap5/css/bootstrap.min.css">
+    <!-- Google字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!--  块标题  -->
     <title>
         {% block title %}
-        首页
-        {% endblock %}</title>
+        首页 | FilmHub
+        {% endblock %}
+    </title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .glass-header {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .glass-header span {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-header span:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15);
+        }
+        
+        .glass-header img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            margin-right: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--glass-border);
+        }
+        
+        .modern-nav {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            padding: 0.5rem 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .modern-nav .nav-link {
+            color: var(--text-dark);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .modern-nav .nav-link:hover, 
+        .modern-nav .nav-link:focus {
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--primary-color);
+        }
+        
+        .modern-nav .nav-link.active {
+            background: var(--primary-color);
+            color: white !important;
+        }
+        
+        .modern-nav .dropdown-menu {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+        }
+        
+        .modern-nav .dropdown-item {
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+        }
+        
+        .modern-nav .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--primary-color);
+        }
+        
+        .glass-alert {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            margin: 1rem auto;
+            max-width: 800px;
+        }
+        
+        .main-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .glass-header span {
+                padding: 8px 16px;
+                font-size: 1.2rem;
+            }
+            
+            .glass-header img {
+                width: 40px;
+                height: 40px;
+                margin-right: 12px;
+            }
+            
+            .modern-nav {
+                padding: 0.5rem;
+            }
+            
+            .main-container {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <br>
     <div class="container">
-        <h1>
-            <img class=" rounded mx-auto" style="width: 10%;vertical-align:middle;"
-                src="{{ url_for('static', filename='万叶.jpg') }}">
-            电影管理系统
+        <h1 class="glass-header">
+            <img class="rounded-circle" src="{{ url_for('static', filename='万叶.jpg') }}" alt="FilmHub Logo">
+            <span>FilmHub 电影管理系统</span>
         </h1>
-    </div>
-    <br>
-    <div class="container">
-        <!--块导航栏-->
-        <!-- 通过block更换活跃状态 -->
-        {% block navelse %}
-        <ul class="nav nav-pills">
-            <li class="nav-item">
-                {% block navindex %}
-                <a class="nav-link" aria-current="page" href="{{ url_for('index')}}">主页</a>
-                {% endblock %}
-            </li>
-            <li class="nav-item">
-                {% block navchat %}
-                 <a class="nav-link" aria-current="page" href="{{ url_for('chat')}}">智能搜索信息</a>
-                {% endblock %}
-            </li>
-            <li class="nav-item dropdown">
-                {% block navmovie %}
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                    aria-expanded="false">电影信息</a>
-                {% endblock %}
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('movie')}}">所有条目</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('movie_search')}}">搜索条目</a></li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
-                {% block navdirector %}
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                    aria-expanded="false">导演信息</a>
-                {% endblock %}
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('director')}}">所有条目</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('director_search')}}">搜索条目</a></li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
-                {% block navrole %}
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                    aria-expanded="false">角色信息</a>
-                {% endblock %}
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('role') }}">所有条目</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('role_search') }}">搜索条目</a></li>
-                </ul>
-            </li>
-            <li class="nav-item dropdown">
-                {% block navactor %}
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
-                    aria-expanded="false">演员信息</a>
-                {% endblock %}
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('actor')}}">所有条目</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('actor_search')}}">搜索条目</a></li>
-                </ul>
-                {% block navtype %}
-                {% endblock%}
-        </ul>
-        {% endblock %}
+        
+        <!-- 导航栏 -->
+        <div class="modern-nav">
+            {% block navelse %}
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    {% block navindex %}
+                    <a class="nav-link" aria-current="page" href="{{ url_for('index')}}">主页</a>
+                    {% endblock %}
+                </li>
+                <li class="nav-item">
+                    {% block navchat %}
+                    <a class="nav-link" aria-current="page" href="{{ url_for('chat')}}">智能搜索信息</a>
+                    {% endblock %}
+                </li>
+                <li class="nav-item dropdown">
+                    {% block navmovie %}
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                        aria-expanded="false">电影信息</a>
+                    {% endblock %}
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('movie')}}">所有条目</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('movie_search')}}">搜索条目</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    {% block navdirector %}
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                        aria-expanded="false">导演信息</a>
+                    {% endblock %}
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('director')}}">所有条目</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('director_search')}}">搜索条目</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    {% block navrole %}
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                        aria-expanded="false">角色信息</a>
+                    {% endblock %}
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('role') }}">所有条目</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('role_search') }}">搜索条目</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    {% block navactor %}
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                        aria-expanded="false">演员信息</a>
+                    {% endblock %}
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('actor')}}">所有条目</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('actor_search')}}">搜索条目</a></li>
+                    </ul>
+                    {% block navtype %}
+                    {% endblock%}
+            </ul>
+            {% endblock %}
+        </div>
+
+        <!-- 提示框 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        {% if category == "success" %}
+        <div class="glass-alert alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% elif category == "warning" %}
+        <div class="glass-alert alert alert-warning alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endwith %}
+
+        <!-- 主要内容区域 -->
+        <div class="main-container">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
 
-    <!-- 插入提示框 -->
-    <!-- 
-        get_flashed_messages()是一个列表，该列表可以取出闪现信息，该条闪现信息只要被取出就会删除掉。 
-        -设置：flash('用户名错误', "username_error")
-      flash('用户密码错误', "password_error") # 第二个参数为闪现信息的分类。
-        -取所有闪现信息的类别和闪现内容：get_flashed_messages(with_categories=True)
-        -针对分类过滤取值：get_flashed_messages(category_filter=['username_error']) 
-                    # 中括号内可以写多个分类。
-        -注意：如果flash()没有传入第二个参数进行分类，默认分类是 'message'
-    
-    -->
-    <br>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for category, message in messages %}
-    {% if category == "success" %}
-    <div class="mx-auto alert alert-success alert-dismissible fade show" style="width:65%" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% elif category == "warning" %}
-    <div class="mx-auto alert alert-warning alert-dismissible fade show" style="width:65%" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endif %}
-    {% endfor %}
-    {% endwith %}
-
-    <!--块内容-->
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
-    <!--块底部内容-->
-    <br>
-    <div style="text-align: center;">
-        <small>
-            Copyright &copy; 2023
-            <a href="https://github.com/Silverwolf-x/movie-management-system">Silverwolf-x
-                Project</a> by hyx
-        </small>
-    </div>
-    <br>
-    <!--加载bootstrap的JavaScript资源-->
+    <!-- 加载bootstrap的js -->
     <script src="/static/bootstrap5/js/bootstrap.bundle.min.js"></script>
 </body>
-
-
 </html>
