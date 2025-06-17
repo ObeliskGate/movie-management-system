@@ -29,9 +29,9 @@ class ActorInfo(db.Model):
     __tablename__ = "actor_info"
     actor_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     actor_name = db.Column(db.String(50), nullable=False)
-    gender = db.Column(db.String(2), nullable=False)
+    # 修改点：将 gender 改为 type
+    type = db.Column(db.String(20), nullable=False)  # 改为类型字段
     country = db.Column(db.String(20))
-    # 更新关系：演员与电影的多对多关系
     movies = db.relationship("MovieInfo", 
                              secondary=actor_movie_relation,
                              back_populates="actors")
@@ -98,22 +98,22 @@ class MovieDirectorRelation(db.Model):
 # 演员表单类
 class ActorForm(FlaskForm):
     actor_name = StringField('演员姓名', validators=[InputRequired(), Length(max=50)])
-    gender_choices = [('', '选择性别'),('男', '男'), ('女', '女')]
-    gender = SelectField('性别', choices=gender_choices, validators=[InputRequired(), Length(max=10)])
+    type_choices = [('', '选择类型'),('男', '男'), ('女', '女'), ('动物', '动物'), ('旁白', '旁白')]
+    type = SelectField('类型', choices=type_choices, validators=[InputRequired(), Length(max=20)])
     country = StringField('国家', validators=[InputRequired(), Length(max=20)])
 
 class ActorSearchForm(FlaskForm):
     actor_id = IntegerField('演员ID', validators=[Optional()])
     actor_name = StringField('演员姓名', validators=[Optional(), Length(max=50)])
-    gender_choices = [('', '选择性别'),('男', '男'), ('女', '女')]
-    gender = SelectField('性别', choices=gender_choices, validators=[Optional()])
+    type_choices = [('', '选择类型'),('男', '男'), ('女', '女'), ('动物', '动物'), ('旁白', '旁白')]
+    type = SelectField('类型', choices=type_choices, validators=[Optional()])
     country = StringField('国家', validators=[Length(max=20), Optional()])
 
 class ActorEditForm(FlaskForm):
-    actor_id = IntegerField('演员ID', validators=[NumberRange(min=2000, max=1000000)])
+    actor_id = IntegerField('演员ID')#, validators=[NumberRange(min=2000, max=1000000)]
     actor_name = StringField('演员姓名', validators=[InputRequired(), Length(max=50)])
-    gender_choices = [('', '选择性别'),('男', '男'), ('女', '女')]
-    gender = SelectField('性别', choices=gender_choices, validators=[InputRequired(), Length(max=10)])
+    type_choices = [('', '选择类型'),('男', '男'), ('女', '女'), ('动物', '动物'), ('旁白', '旁白')]
+    type = SelectField('类型', choices=type_choices, validators=[InputRequired(), Length(max=20)])
     country = StringField('国家', validators=[InputRequired(), Length(max=20)])
 
 # 导演表单类
@@ -131,7 +131,7 @@ class DirectorSearchForm(FlaskForm):
     country = StringField('国家', validators=[Length(max=20), Optional()])
 
 class DirectorEditForm(FlaskForm):
-    director_id = IntegerField('导演ID', validators=[NumberRange(min=3000, max=1000000)])
+    director_id = IntegerField('导演ID')#, validators=[NumberRange(min=3000, max=1000000)]
     director_name = StringField('导演姓名', validators=[InputRequired(), Length(max=50)])
     gender_choices = [('', '选择性别'),('男', '男'), ('女', '女')]
     gender = SelectField('性别', choices=gender_choices, validators=[InputRequired(), Length(max=10)])
@@ -148,7 +148,7 @@ class CompanySearchForm(FlaskForm):
     city = StringField('城市', validators=[Length(max=20), Optional()])
 
 class CompanyEditForm(FlaskForm):
-    company_id = IntegerField('公司ID', validators=[NumberRange(min=4000, max=1000000)])
+    company_id = IntegerField('公司ID')#, validators=[NumberRange(min=4000, max=1000000)]
     company_name = StringField('公司名称', validators=[InputRequired(), Length(max=50)])
     city = StringField('城市', validators=[InputRequired(), Length(max=20)])
 
@@ -165,7 +165,7 @@ class RoleSearchForm(FlaskForm):
     role_name = StringField('角色名称', validators=[Optional(), Length(max=50)])
 
 class RoleEditForm(FlaskForm):
-    role_id = IntegerField('角色ID', validators=[NumberRange(min=5000, max=1000000)])
+    role_id = IntegerField('角色ID')#, validators=[NumberRange(min=5000, max=1000000)]
     movie_id = IntegerField('电影ID', validators=[InputRequired()])
     actor_id = IntegerField('演员ID', validators=[InputRequired()])
     role_name = StringField('角色名称', validators=[InputRequired(), Length(max=50)])
@@ -177,6 +177,8 @@ class MovieForm(FlaskForm):
     country = StringField('国家', validators=[InputRequired(),Length(max=20)])
     type = StringField('类型', validators=[InputRequired()])
     company_id = IntegerField('出品公司ID', validators=[InputRequired()])
+    actor_ids = StringField('演员ID列表', validators=[Optional()])
+    director_ids = StringField('导演ID列表', validators=[Optional()])
 
 class MovieSearchForm(FlaskForm):   
     movie_id = IntegerField('电影ID', validators=[Optional()])
@@ -187,9 +189,11 @@ class MovieSearchForm(FlaskForm):
     company_id = IntegerField('出品公司ID', validators=[Optional()])
 
 class MovieEditForm(FlaskForm):
-    movie_id = IntegerField('电影ID', validators=[NumberRange(min=1000, max=1000000)])
-    movie_name = StringField('电影名称', validators=[InputRequired(),Length(max=20)])
+    movie_name = StringField('电影名称')#, validators=[InputRequired(),Length(max=20)]
     release_date = DateField('上映日期', format=r'%Y-%m-%d', validators=[InputRequired()])
     country = StringField('国家', validators=[InputRequired(),Length(max=20)])
     type = StringField('类型', validators=[InputRequired()])
     company_id = IntegerField('出品公司ID', validators=[InputRequired()])
+    # 添加以下两个字段
+    actor_ids = StringField('演员ID列表', validators=[Optional()])
+    director_ids = StringField('导演ID列表', validators=[Optional()])

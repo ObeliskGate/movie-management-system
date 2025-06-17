@@ -12,18 +12,23 @@
     <table class="table table-hover align-middle">
         <thead class="border-dark">
             <tr>
-                {% for column in actors_col %}
-                <th scope="col">{{ column }}</th>
-                {% endfor %}
+                <th>演员ID</th>
+                <th>演员姓名</th>
+                <!-- 修改点：将"性别"改为"类型" -->
+                <th>类型</th>
+                <th>国家</th>
+                <th>操作</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <form method="post">
+            <form method="post">
+                <tr>
                     {{ form.csrf_token }}{{ form.hidden_tag() }}
                     <td scope="row" class="align-middle">自动生成</td>
+                    <!-- 修改点：actor_name的placeholder改为"输入姓名" -->
                     <td>{{ form.actor_name(class="form-control", placeholder="输入姓名") }}</td>
-                    <td>{{ form.gender(class="form-control", placeholder="输入性别") }}</td>
+                    <!-- 修改点：将gender改为type -->
+                    <td>{{ form.type(class="form-control", placeholder="输入类型") }}</td>
                     <td>{{ form.country(class="form-control", placeholder="输入国籍") }}</td>
                     <td>
                         <div class="d-grid gap-1 d-md-flex justify-content-md"><button type="submit"
@@ -36,7 +41,8 @@
             <tr>
                 <td scope="row">{{ actor.actor_id }}</td>
                 <td>{{ actor.actor_name }}</td>
-                <td>{{ actor.gender }}</td>
+                <!-- 修改点：将gender改为type -->
+                <td>{{ actor.type }}</td>
                 <td>{{ actor.country }}</td>
                 <td>
                     <div class="d-grid gap-1 d-md-flex justify-content-md">
@@ -58,6 +64,5 @@
         </tbody>
     </table>
 </div>
-
 
 {% endblock %}

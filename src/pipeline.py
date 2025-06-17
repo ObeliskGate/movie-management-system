@@ -65,18 +65,20 @@ def movie_add_pipeline(form):
             company_id=form.company_id.data
         )
         
-        # 处理演员关系（可选）
-        if form.actor_ids.data:
-            actor_ids = [int(id.strip()) for id in form.actor_ids.data.split(',') if id.strip()]
+        # 安全处理演员关系（可选）
+        actor_ids = form.actor_ids.data if hasattr(form, 'actor_ids') and form.actor_ids.data else None
+        if actor_ids:
+            actor_ids = [int(id.strip()) for id in actor_ids.split(',') if id.strip()]
             for actor_id in actor_ids:
                 actor = ActorInfo.query.get(actor_id)
                 if not actor:
                     return False, f"演员ID {actor_id} 不存在"
                 new_movie.actors.append(actor)
         
-        # 处理导演关系（可选）
-        if form.director_ids.data:
-            director_ids = [int(id.strip()) for id in form.director_ids.data.split(',') if id.strip()]
+        # 安全处理导演关系（可选）
+        director_ids = form.director_ids.data if hasattr(form, 'director_ids') and form.director_ids.data else None
+        if director_ids:
+            director_ids = [int(id.strip()) for id in director_ids.split(',') if id.strip()]
             for director_id in director_ids:
                 director = DirectorInfo.query.get(director_id)
                 if not director:
@@ -106,8 +108,9 @@ def actor_search_pipeline(form):
         filters.append(ActorInfo.actor_id == form.actor_id.data)
     if form.actor_name.data:
         filters.append(ActorInfo.actor_name.ilike(f'%{form.actor_name.data}%'))
-    if form.gender.data:
-        filters.append(ActorInfo.gender == form.gender.data)
+    # 修改点：gender 改为 type
+    if form.type.data:
+        filters.append(ActorInfo.type == form.type.data)
     if form.country.data:
         filters.append(ActorInfo.country.ilike(f'%{form.country.data}%'))
     
@@ -118,7 +121,8 @@ def actor_add_pipeline(form):
     try:
         new_actor = ActorInfo(
             actor_name=form.actor_name.data,
-            gender=form.gender.data,
+            # 修改点：gender 改为 type
+            type=form.type.data,  # 使用类型字段
             country=form.country.data,
         )
         db.session.add(new_actor)
