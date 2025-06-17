@@ -80,6 +80,8 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
             padding: 0.5rem 1rem;
             margin-bottom: 2rem;
+            z-index: 1050;
+            position: relative;
         }
         
         .modern-nav .nav-link {
@@ -107,11 +109,14 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 8px;
+            z-index: 1051;
         }
+
         
         .modern-nav .dropdown-item {
             color: var(--text-dark);
             transition: all 0.2s ease;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); 
         }
         
         .modern-nav .dropdown-item:hover {
@@ -139,6 +144,7 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
             padding: 2rem;
             margin-bottom: 2rem;
+            z-index: 1030;
         }
         
         @media (max-width: 768px) {

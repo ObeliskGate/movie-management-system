@@ -5,15 +5,23 @@ from sqlalchemy import and_
 
 # 通用安全删除函数
 def safe_delete(entity, id_value, id_field='id'):
-    """安全删除实体，处理外键约束"""
+    """安全删除实体，处理外键约束和关系表"""
     try:
-        # 动态构建查询条件
         filter_condition = {id_field: id_value}
         record = entity.query.filter_by(**filter_condition).first()
         
         if not record:
             return False, f"未找到ID为 {id_value} 的记录"
         
+        # 如果是电影，先清除关系表中的关联记录
+        if isinstance(record, MovieInfo):
+            # 清除演员关系
+            record.actors = []
+            # 清除导演关系
+            record.directors = []
+            db.session.commit()
+        
+        # 如果是演员或导演，关系表会自动处理（外键约束）
         db.session.delete(record)
         db.session.commit()
         return True, f"成功删除ID为 {id_value} 的记录"
@@ -45,10 +53,10 @@ def movie_search_pipeline(form):
     return query.all()
 
 def movie_add_pipeline(form):
-    """添加电影管道"""
+    """添加电影管道（包含演员和导演关系处理）"""
     try:
+        # 创建电影对象
         new_movie = MovieInfo(
-            movie_id=form.movie_id.data,
             movie_name=form.movie_name.data,
             release_date=form.release_date.data,
             country=form.country.data,
@@ -56,6 +64,25 @@ def movie_add_pipeline(form):
             year=form.release_date.data.year,
             company_id=form.company_id.data
         )
+        
+        # 处理演员关系（可选）
+        if form.actor_ids.data:
+            actor_ids = [int(id.strip()) for id in form.actor_ids.data.split(',') if id.strip()]
+            for actor_id in actor_ids:
+                actor = ActorInfo.query.get(actor_id)
+                if not actor:
+                    return False, f"演员ID {actor_id} 不存在"
+                new_movie.actors.append(actor)
+        
+        # 处理导演关系（可选）
+        if form.director_ids.data:
+            director_ids = [int(id.strip()) for id in form.director_ids.data.split(',') if id.strip()]
+            for director_id in director_ids:
+                director = DirectorInfo.query.get(director_id)
+                if not director:
+                    return False, f"导演ID {director_id} 不存在"
+                new_movie.directors.append(director)
+        
         db.session.add(new_movie)
         db.session.commit()
         return True, f'成功添加电影 {new_movie.movie_name} (ID:{new_movie.movie_id})'
@@ -66,6 +93,9 @@ def movie_add_pipeline(form):
         db.session.rollback()
         app.logger.error(f"数据库错误: {str(e)}")
         return False, f"添加失败：数据库错误 - {str(e)}"
+    except ValueError:
+        db.session.rollback()
+        return False, "ID格式错误：请使用逗号分隔的数字ID"
 
 # 演员管道函数
 def actor_search_pipeline(form):
@@ -87,7 +117,6 @@ def actor_add_pipeline(form):
     """添加演员管道"""
     try:
         new_actor = ActorInfo(
-            actor_id=form.actor_id.data,
             actor_name=form.actor_name.data,
             gender=form.gender.data,
             country=form.country.data,
@@ -123,7 +152,6 @@ def director_add_pipeline(form):
     """添加导演管道"""
     try:
         new_director = DirectorInfo(
-            director_id=form.director_id.data,
             director_name=form.director_name.data,
             gender=form.gender.data,
             country=form.country.data,
@@ -157,7 +185,6 @@ def company_add_pipeline(form):
     """添加出品公司管道"""
     try:
         new_company = ProductionCompany(
-            company_id=form.company_id.data,
             company_name=form.company_name.data,
             city=form.city.data,
         )
@@ -201,7 +228,6 @@ def role_add_pipeline(form):
             return False, f"演员ID {form.actor_id.data} 不存在"
         
         new_role = RoleInfo(
-            role_id=form.role_id.data,
             movie_id=form.movie_id.data,
             actor_id=form.actor_id.data,
             role_name=form.role_name.data,
@@ -219,45 +245,30 @@ def role_add_pipeline(form):
 
 # 查询功能管道
 def director_movies_pipeline(director_id):
-    """查询导演执导的电影"""
+    """查询导演执导的电影（使用新关系表）"""
     director = DirectorInfo.query.get(director_id)
     if not director:
         return None
     
-    # 获取导演执导的电影
-    movies = []
-    for relation in director.movies:
-        movie = MovieInfo.query.get(relation.movie_id)
-        if movie:
-            movies.append({
-                'movie_id': movie.movie_id,
-                'movie_name': movie.movie_name,
-                'release_date': movie.release_date,
-                'country': movie.country,
-                'type': movie.type
-            })
-    
-    return movies
+    # 直接获取导演执导的电影
+    return [{
+        'movie_id': movie.movie_id,
+        'movie_name': movie.movie_name,
+        'release_date': movie.release_date
+    } for movie in director.movies]
 
 def actor_movies_pipeline(actor_id):
-    """查询演员出演的电影"""
+    """查询演员出演的电影（使用新关系表）"""
     actor = ActorInfo.query.get(actor_id)
     if not actor:
         return None
     
-    # 获取演员出演的电影及相关角色
-    movies_with_roles = []
-    for role in actor.roles:
-        movie = MovieInfo.query.get(role.movie_id)
-        if movie:
-            movies_with_roles.append({
-                'movie_id': movie.movie_id,
-                'movie_name': movie.movie_name,
-                'release_date': movie.release_date,
-                'role_name': role.role_name
-            })
-    
-    return movies_with_roles
+    # 直接获取演员出演的电影
+    return [{
+        'movie_id': movie.movie_id,
+        'movie_name': movie.movie_name,
+        'release_date': movie.release_date
+    } for movie in actor.movies]
 
 def role_info_pipeline(role_id):
     """查询角色详细信息"""

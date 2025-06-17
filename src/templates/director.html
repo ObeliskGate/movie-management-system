@@ -23,7 +23,7 @@
             <form method="post">
                 <tr>
                     {{ form.csrf_token }}{{ form.hidden_tag() }}
-                    <td scope="row">{{ form.director_id(class="form-control", placeholder="输入导演编号") }}</td>
+                    <td scope="row" class="align-middle">自动生成</td>
                     <td>{{ form.director_name(class="form-control", placeholder="输入姓名") }}</td>
                     <td>{{ form.gender(class="form-control", placeholder="输入性别") }}</td>
                     <td>{{ form.country(class="form-control", placeholder="输入国籍") }}</td>

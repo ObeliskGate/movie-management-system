@@ -6,48 +6,74 @@ from src.init import db
 # 出品公司模型
 class ProductionCompany(db.Model):
     __tablename__ = "production_company"
-    company_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    company_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     company_name = db.Column(db.String(50), nullable=False)
     city = db.Column(db.String(20))
     movies = db.relationship("MovieInfo", backref="production_company", cascade="all, delete-orphan")
 
+# 演员-电影关系表
+actor_movie_relation = db.Table('actor_movie_relation',
+    db.Column('actor_id', db.Integer, db.ForeignKey('actor_info.actor_id'), primary_key=True),
+    db.Column('movie_id', db.Integer, db.ForeignKey('movie_info.movie_id'), primary_key=True)
+)
+
+# 导演-电影关系表
+director_movie_relation = db.Table('director_movie_relation',
+    db.Column('director_id', db.Integer, db.ForeignKey('director_info.director_id'), primary_key=True),
+    db.Column('movie_id', db.Integer, db.ForeignKey('movie_info.movie_id'), primary_key=True)
+)
+
+
+# 演员模型
+class ActorInfo(db.Model):
+    __tablename__ = "actor_info"
+    actor_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    actor_name = db.Column(db.String(50), nullable=False)
+    gender = db.Column(db.String(2), nullable=False)
+    country = db.Column(db.String(20))
+    # 更新关系：演员与电影的多对多关系
+    movies = db.relationship("MovieInfo", 
+                             secondary=actor_movie_relation,
+                             back_populates="actors")
+    roles = db.relationship("RoleInfo", backref="actor", cascade="all, delete-orphan")
+
 # 导演模型
 class DirectorInfo(db.Model):
     __tablename__ = "director_info"
-    director_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    director_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     director_name = db.Column(db.String(50), nullable=False)
     gender = db.Column(db.String(2), nullable=False)
     country = db.Column(db.String(20))
-    movies = db.relationship("MovieInfo", secondary="movie_director_relation", back_populates="directors")
+    # 更新关系：导演与电影的多对多关系
+    movies = db.relationship("MovieInfo", 
+                             secondary=director_movie_relation,
+                             back_populates="directors")
 
 # 电影模型
 class MovieInfo(db.Model):
     __tablename__ = "movie_info"
-    movie_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    movie_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     movie_name = db.Column(db.String(50), nullable=False)
     release_date = db.Column(db.Date)
     country = db.Column(db.String(20))
     type = db.Column(db.String(20))
     year = db.Column(db.Integer)
     company_id = db.Column(db.Integer, db.ForeignKey('production_company.company_id'), nullable=False)
-    actors = db.relationship("ActorInfo", secondary="role_info", back_populates="movies")
-    directors = db.relationship("DirectorInfo", secondary="movie_director_relation", back_populates="movies")
-    roles = db.relationship("RoleInfo", backref="movie", cascade="all, delete-orphan")
 
-# 演员模型
-class ActorInfo(db.Model):
-    __tablename__ = "actor_info"
-    actor_id = db.Column(db.Integer, primary_key=True, nullable=False)
-    actor_name = db.Column(db.String(50), nullable=False)
-    gender = db.Column(db.String(2), nullable=False)
-    country = db.Column(db.String(20))
-    movies = db.relationship("MovieInfo", secondary="role_info", back_populates="actors")
-    roles = db.relationship("RoleInfo", backref="actor", cascade="all, delete-orphan")
+    actors = db.relationship("ActorInfo", 
+                             secondary=actor_movie_relation,
+                             back_populates="movies")
+    
+    directors = db.relationship("DirectorInfo", 
+                                secondary=director_movie_relation,
+                                back_populates="movies")
+    
+    roles = db.relationship("RoleInfo", backref="movie", cascade="all, delete-orphan")
 
 # 角色模型
 class RoleInfo(db.Model):
     __tablename__ = "role_info"
-    role_id = db.Column(db.Integer, primary_key=True)
+    role_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     movie_id = db.Column(db.Integer, db.ForeignKey('movie_info.movie_id'), nullable=False)
     actor_id = db.Column(db.Integer, db.ForeignKey('actor_info.actor_id'), nullable=False)
     role_name = db.Column(db.String(50), nullable=False)
@@ -71,7 +97,6 @@ class MovieDirectorRelation(db.Model):
 
 # 演员表单类
 class ActorForm(FlaskForm):
-    actor_id = IntegerField('演员ID', validators=[InputRequired(), NumberRange(min=2000, max=1000000)])
     actor_name = StringField('演员姓名', validators=[InputRequired(), Length(max=50)])
     gender_choices = [('', '选择性别'),('男', '男'), ('女', '女')]
     gender = SelectField('性别', choices=gender_choices, validators=[InputRequired(), Length(max=10)])
@@ -93,7 +118,6 @@ class ActorEditForm(FlaskForm):
 
 # 导演表单类
 class DirectorForm(FlaskForm):
-    director_id = IntegerField('导演ID', validators=[InputRequired(), NumberRange(min=3000, max=1000000)])
     director_name = StringField('导演姓名', validators=[InputRequired(), Length(max=50)])
     gender_choices = [('', '选择性别'),('男', '男'), ('女', '女')]
     gender = SelectField('性别', choices=gender_choices, validators=[InputRequired(), Length(max=10)])
@@ -115,7 +139,6 @@ class DirectorEditForm(FlaskForm):
 
 # 出品公司表单类
 class CompanyForm(FlaskForm):
-    company_id = IntegerField('公司ID', validators=[InputRequired(), NumberRange(min=4000, max=1000000)])
     company_name = StringField('公司名称', validators=[InputRequired(), Length(max=50)])
     city = StringField('城市', validators=[InputRequired(), Length(max=20)])
 
@@ -131,7 +154,6 @@ class CompanyEditForm(FlaskForm):
 
 # 角色表单类
 class RoleForm(FlaskForm):
-    role_id = IntegerField('角色ID', validators=[InputRequired(), NumberRange(min=5000, max=1000000)])
     movie_id = IntegerField('电影ID', validators=[InputRequired()])
     actor_id = IntegerField('演员ID', validators=[InputRequired()])
     role_name = StringField('角色名称', validators=[InputRequired(), Length(max=50)])
@@ -150,7 +172,6 @@ class RoleEditForm(FlaskForm):
 
 # 电影表单类
 class MovieForm(FlaskForm):
-    movie_id = IntegerField('电影ID', validators=[InputRequired(), NumberRange(min=1000, max=1000000)])
     movie_name = StringField('电影名称', validators=[InputRequired(),Length(max=20)])
     release_date = DateField('上映日期', format=r'%Y-%m-%d', validators=[InputRequired()])
     country = StringField('国家', validators=[InputRequired(),Length(max=20)])
