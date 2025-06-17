@@ -120,6 +120,16 @@
         margin-top: 10px;
         display: none;
     }
+    /* 确保 <pre> 继承消息区域的字体 */
+    .message pre {
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        margin: 0;
+        white-space: pre-wrap;
+        background: transparent; 
+        border: none; 
+    }
 </style>
 
 <script>
@@ -133,7 +143,9 @@
     function addMessage(content, role) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${role}-message`;
-        messageDiv.textContent = content;
+        const preElement = document.createElement('pre');
+        preElement.textContent = content;
+        messageDiv.appendChild(preElement);
         chatHistory.appendChild(messageDiv);
         chatHistory.scrollTop = chatHistory.scrollHeight;
     }
