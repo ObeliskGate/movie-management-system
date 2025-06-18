@@ -7,6 +7,7 @@ Fudan SDS 《数据库及实现》课程期末 Project.
     ```
     [default]
     server_type = mysql
+    secret_key = {default secret key}
 
     [mysql]
     host = localhost
@@ -14,6 +15,9 @@ Fudan SDS 《数据库及实现》课程期末 Project.
     user = {root}
     password = {your password}
     db_name = movie_db
+
+    [sqlite]  ; used when server_type == sqlite
+    filename = movie.db
 
     [agent]
     model = qwen-plus

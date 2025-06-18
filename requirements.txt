@@ -1,7 +1,6 @@
 flask[async]
 flask_sqlalchemy
 flask_wtf
-pymysql
 openai
 pyautogen
 sqlalchemy

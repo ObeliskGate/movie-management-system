@@ -4,7 +4,6 @@ from sqlalchemy.exc import OperationalError, ProgrammingError
 from flask import Flask
 import configparser
 import os
-import pymysql
 from pathlib import Path
 
 # 读取配置文件
@@ -14,8 +13,10 @@ config.read('config.ini')
 # 创建Flask应用
 app = Flask(__name__)
 
+app.config['SECRET_KEY'] = config.get('default', 'secret_key', fallback='default_secret_key')
+
 # 获取服务器类型配置
-server_type = config.get('default', 'server_type', fallback='sqlite')
+server_type = config.get('default', 'server_type', fallback='mysql')
 
 # 数据库连接池配置
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
@@ -58,11 +59,7 @@ if server_type == 'mysql':
     # 配置数据库URI
     app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}?charset=utf8mb4"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = 'your_secret_key'
     try:
-        app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}?charset=utf8mb4"
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        app.config['SECRET_KEY'] = 'your_secret_key'
         db = SQLAlchemy(app)
         with app.app_context():
             db.engine.connect()
@@ -96,15 +93,11 @@ elif server_type == 'sqlite':
     db_path = os.path.join(os.getcwd(), filename)
     app.config["SQLALCHEMY_DATABASE_URI"] = rf"sqlite:///{db_path}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = 'your_secret_key'
     
     # 检查是否需要初始化
     if not os.path.exists(db_path):
-        print("SQLite数据库不存在，尝试初始化...")
-        if execute_sql_file('movie_init.sql'):
-            print("数据库初始化完成")
-        else:
-            print("数据库初始化失败")
+        print("SQLite数据库不存在, 数据库初始化失败")
+        exit(1)
     
 else:
     print('请填写config.ini选择数据库')

@@ -108,7 +108,8 @@ assistant = AssistantAgent(
     system_message="""You are a helpful assistant for querying film information.
     Always explore the database first using explore_database before executing any queries.
     Pay attention that the information you get through explore_database is limited, which just help you to understand the column of the schema.
-    Make sure to understand the available data before constructing SQL queries."""
+    Make sure to understand the available data before constructing SQL queries.
+    Only `SELECT `query operations are permitted, as other actions are unsafe."""
 )
 
 # 创建用户代理实例
