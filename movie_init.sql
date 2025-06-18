@@ -8,11 +8,11 @@ CREATE TABLE IF NOT EXISTS production_company (
     city VARCHAR(20)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 创建演员表
+-- 创建演员表 (修改点：将gender改为type)
 CREATE TABLE IF NOT EXISTS actor_info (
     actor_id INT AUTO_INCREMENT PRIMARY KEY,
     actor_name VARCHAR(50) NOT NULL,
-    gender VARCHAR(2) NOT NULL,
+    type VARCHAR(20) NOT NULL,  -- 修改点：gender改为type
     country VARCHAR(20)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -90,7 +90,7 @@ INSERT INTO director_info (director_name, gender, country) VALUES
 ('罗伯托·贝尼尼', '男', '意大利');       -- director_id 10
 
 -- 3. 创建演员表数据（从ID 1开始）
-INSERT INTO actor_info (actor_name, gender, country) VALUES
+INSERT INTO actor_info (actor_name, type, country) VALUES
 ('蒂姆·罗宾斯', '男', '美国'),           -- actor_id 1
 ('摩根·弗里曼', '男', '美国'),           -- actor_id 2
 ('马龙·白兰度', '男', '美国'),           -- actor_id 3
@@ -211,7 +211,7 @@ INSERT INTO director_info (director_name, gender, country) VALUES
 ('朱塞佩·托纳多雷', '男', '意大利');    -- director_id 13
 
 -- 新增演员（ID 19-28）--
-INSERT INTO actor_info (actor_name, gender, country) VALUES
+INSERT INTO actor_info (actor_name, type, country) VALUES
 ('罗伯特·德尼罗', '男', '美国'),        -- actor_id 19
 ('艾伦·佩吉', '女', '加拿大'),          -- actor_id 20
 ('山姆·尼尔', '男', '新西兰'),          -- actor_id 21
@@ -307,7 +307,7 @@ INSERT INTO director_info (director_name, gender, country) VALUES
 ('大卫·芬奇', '男', '美国');           -- director_id 15 (已有，但确保ID连续)
 
 -- 新增演员（ID 29-38）--
-INSERT INTO actor_info (actor_name, gender, country) VALUES
+INSERT INTO actor_info (actor_name, type, country) VALUES
 ('安迪·加西亚', '男', '美国'),         -- actor_id 29
 ('马修·麦康纳', '男', '美国'),         -- actor_id 30
 ('亨利·托马斯', '男', '美国'),         -- actor_id 31
@@ -397,7 +397,7 @@ INSERT INTO director_info (director_name, gender, country) VALUES
 ('亚历杭德罗·冈萨雷斯·伊纳里图', '男', '墨西哥'); -- director_id 20
 
 -- 新增演员（ID 39-58）--
-INSERT INTO actor_info (actor_name, gender, country) VALUES
+INSERT INTO actor_info (actor_name, type, country) VALUES
 ('汤姆·克鲁斯', '男', '美国'),          -- actor_id 39
 ('汤姆·汉克斯', '男', '美国'),          -- actor_id 40
 ('威尔·史密斯', '男', '美国'),         -- actor_id 41
@@ -538,7 +538,7 @@ INSERT INTO actor_movie_relation (actor_id, movie_id) VALUES
 (47, 50);             -- 德普(需补)
 
 -- 补充演员 --
-INSERT INTO actor_info (actor_name, gender, country) VALUES
+INSERT INTO actor_info (actor_name, type, country) VALUES
 ('凯特·温斯莱特', '女', '英国'),      -- actor_id 59
 ('萨姆·沃辛顿', '男', '澳大利亚'),     -- actor_id 60
 ('约翰尼·德普', '男', '美国');        -- actor_id 61
@@ -585,7 +585,7 @@ INSERT INTO director_info (director_name, gender, country) VALUES
 ('关家永', '男', '美国');                   -- director_id 32
 
 -- 新增演员（ID 62-71）--
-INSERT INTO actor_info (actor_name, gender, country) VALUES
+INSERT INTO actor_info (actor_name, type, country) VALUES
 ('佐伊·索尔达娜', '女', '美国'),           -- actor_id 62
 ('基里安·墨菲', '男', '爱尔兰'),           -- actor_id 63
 ('提莫西·查拉梅', '男', '美国'),           -- actor_id 64
@@ -684,7 +684,7 @@ INSERT INTO director_info (director_name, gender, country) VALUES
 ('雷德利·斯科特', '男', '英国');              -- director_id 37 (已有)
 
 -- 新增演员（ID 72-81）--
-INSERT INTO actor_info (actor_name, gender, country) VALUES
+INSERT INTO actor_info (actor_name, type, country) VALUES
 ('沙梅克·摩尔', '男', '美国'),                -- actor_id 72
 ('克里斯·帕拉特', '男', '美国'),              -- actor_id 73
 ('基里安·墨菲', '男', '爱尔兰'),              -- actor_id 74 (已有)
@@ -769,3 +769,99 @@ INSERT INTO role_info (movie_id, actor_id, role_name) VALUES
 (69, 80, '宫城良田'),
 -- 拿破仑
 (70, 81, '拿破仑·波拿巴');
+
+-- 添加新的出品公司（ID 13-15）
+INSERT INTO production_company (company_name, city) VALUES
+('东宝株式会社', '东京'),                  -- company_id 13 (忠犬八公)
+('狮门影业', '圣莫尼卡'),                  -- company_id 14 (海豚湾)
+('CJ娱乐', '首尔'),                       -- company_id 15 (心心历险记)
+('日本电视放送网', '东京'),                -- company_id 16 (导盲犬小Q)
+('北京缘起文化', '北京'),                  -- company_id 17 (二十二)
+('CNEX', '北京'),                         -- company_id 18 (中国工厂)
+('Uplink', '东京'),                       -- company_id 19 (坂本龙一)
+('Atlas', '斯科普里');                    -- company_id 20 (蜜蜂之地)
+
+-- 添加特殊演员（动物和旁白类型）(ID 82-92)
+INSERT INTO actor_info (actor_name, type, country) VALUES
+('八公(秋田犬)', '动物', '日本'),         -- actor_id 82
+('海豚(太平洋)', '动物', '太平洋'),       -- actor_id 83
+('心心(藏獒)', '动物', '中国'),           -- actor_id 84
+('小Q(拉布拉多)', '动物', '日本'),        -- actor_id 85
+('纪录片旁白', '旁白', '中国'),           -- actor_id 86 (二十二)
+('工厂工人群像', '旁白', '中国'),         -- actor_id 87 (中国工厂)
+('坂本龙一', '旁白', '日本'),             -- actor_id 88
+('哈提兹', '旁白', '北马其顿'),           -- actor_id 89 (蜜蜂之地)
+('养蜂人', '旁白', '北马其顿'),           -- actor_id 90
+('蜜蜂群', '动物', '北马其顿'),           -- actor_id 91
+('纪录片解说', '旁白', '国际');           -- actor_id 92 (海豚湾)
+
+-- 添加这些特殊电影（ID 71-78）
+INSERT INTO movie_info (movie_name, release_date, country, type, year, company_id) VALUES
+('忠犬八公的故事', '2009-08-08', '日本', '剧情', 2009, 13),    -- movie_id 71
+('海豚湾', '2009-07-31', '美国', '纪录片', 2009, 14),         -- movie_id 72
+('心心历险记', '2010-06-30', '韩国', '冒险', 2010, 15),       -- movie_id 73
+('导盲犬小Q', '2004-03-13', '日本', '剧情', 2004, 16),        -- movie_id 74
+('二十二', '2017-08-14', '中国', '纪录片', 2017, 17),          -- movie_id 75
+('中国工厂', '2019-11-22', '中国', '纪录片', 2019, 18),        -- movie_id 76
+('坂本龙一：终曲', '2019-12-16', '日本', '纪录片', 2019, 19), -- movie_id 77
+('蜜蜂之地', '2020-03-06', '北马其顿', '纪录片', 2020, 20);   -- movie_id 78
+
+-- 添加导演（ID 43-50）
+INSERT INTO director_info (director_name, gender, country) VALUES
+('泷田洋二郎', '男', '日本'),              -- director_id 43 (忠犬八公)
+('路易·西霍尤斯', '男', '美国'),           -- director_id 44 (海豚湾)
+('朴英勋', '男', '韩国'),                  -- director_id 45 (心心历险记)
+('崔洋一', '男', '日本'),                  -- director_id 46 (导盲犬小Q)
+('郭柯', '男', '中国'),                    -- director_id 47 (二十二)
+('萧潇', '女', '中国'),                    -- director_id 48 (中国工厂)
+('史蒂芬·野村·斯奇博', '男', '美国'),      -- director_id 49 (坂本龙一)
+('塔玛拉·科特夫斯卡', '女', '北马其顿');   -- director_id 50 (蜜蜂之地)
+
+-- 导演-电影关系
+INSERT INTO director_movie_relation (director_id, movie_id) VALUES
+(43, 71),   -- 忠犬八公
+(44, 72),   -- 海豚湾
+(45, 73),   -- 心心历险记
+(46, 74),   -- 导盲犬小Q
+(47, 75),   -- 二十二
+(48, 76),   -- 中国工厂
+(49, 77),   -- 坂本龙一
+(50, 78);   -- 蜜蜂之地
+
+-- 演员-电影关系
+INSERT INTO actor_movie_relation (actor_id, movie_id) VALUES
+-- 忠犬八公
+(82, 71),   -- 八公
+-- 海豚湾
+(83, 72), (92, 72),  -- 海豚, 解说
+-- 心心历险记
+(84, 73),   -- 心心
+-- 导盲犬小Q
+(85, 74),   -- 小Q
+-- 二十二
+(86, 75),   -- 旁白
+-- 中国工厂
+(87, 76),   -- 工人群像
+-- 坂本龙一
+(88, 77),   -- 本人
+-- 蜜蜂之地
+(89, 78), (90, 78), (91, 78);  -- 哈提兹, 养蜂人, 蜜蜂
+
+-- 角色信息
+INSERT INTO role_info (movie_id, actor_id, role_name) VALUES
+-- 忠犬八公
+(71, 82, '八公'),
+-- 海豚湾
+(72, 83, '海豚'), (72, 92, '纪录片解说'),
+-- 心心历险记
+(73, 84, '心心'),
+-- 导盲犬小Q
+(74, 85, '小Q'),
+-- 二十二
+(75, 86, '历史见证者旁白'),
+-- 中国工厂
+(76, 87, '工人群体叙述'),
+-- 坂本龙一
+(77, 88, '自我讲述'),
+-- 蜜蜂之地
+(78, 89, '哈提兹'), (78, 90, '养蜂人'), (78, 91, '蜜蜂群');
