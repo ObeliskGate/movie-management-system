@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS movie_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE movie_db;
-
 -- 创建出品公司表
 CREATE TABLE IF NOT EXISTS production_company (
     company_id INT AUTO_INCREMENT PRIMARY KEY,

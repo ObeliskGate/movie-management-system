@@ -16,7 +16,7 @@ Fudan SDS 《数据库及实现》课程期末 Project.
     password = {your password}
     db_name = movie_db
 
-    [sqlite]  ; used when server_type == sqlite
+    [sqlite]
     filename = movie.db
 
     [agent]
@@ -25,19 +25,19 @@ Fudan SDS 《数据库及实现》课程期末 Project.
     base_url = https://dashscope.aliyuncs.com/compatible-mode/v1
     ```
 - 安装所需python包，推荐3.10
-    ```python
+    ```
     pip install -r requirements.txt
     ```
-- 运行`run.py`
+- 运行`python run.py`
+
+### 注意事项
+- 我们的测试数据位于`movie_init.sql`中, 在 mysql 中没有`db_name`数据库时会自动执行该`.sql`文件, 否则会从. 若希望从头测试, 请`DROP DATABASE db_name`或设置一个和已有表`db_name`
+- `sqlite`通过本地的`filename`文件初始化, 需要自行通过`movie_init.sql`构造`.db`文件
+
 
 ## 实现
 
-- 数据库： 在 mysql 上测试
+- 数据库： 在 mysql 上测试, 支持 sqlite
 - 编程语言：Python
 - Web 框架：Flask
 - 前端框架：Bootstrap5
-
-## 内容
-- 完全重构了数据库模式, 使其符合课程要求及 3NF
-- 修改了界面样式
-- 添加了 Ai Agent 功能

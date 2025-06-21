@@ -1,4 +1,5 @@
 from flask import render_template, request, jsonify
+import openai
 from sqlalchemy import (
     inspect,
     text,
@@ -247,11 +248,21 @@ def set_chat_route(app):
     @app.route('/api/init_chat')
     async def _init_chat():
         # 单独处理初始化
-        await user_proxy.a_initiate_chat(
-            assistant,
-            message="请预加载数据库中的数据",
-            # max_turns=2,
-            clear_history=True,
-        )
-        return jsonify({"status": "success"})
+        try:
+            await user_proxy.a_initiate_chat(
+                assistant,
+                message="请预加载数据库中的数据",
+                # max_turns=2,
+                clear_history=True,
+            )
+            return jsonify({"status": "success"})
+        except openai.APIError as e:
+            if e.code == 'invalid_api_key':
+                return jsonify({'status': "error",
+                                "message": "无效的API密钥，请检查配置"}), 401
+            return jsonify({'status': "error",
+                            "message": f"API 配置失败: {str(e)}"}), 500
+        except Exception as e:
+            return jsonify({'status': "error",
+                            "message": f"初始化失败: {str(e)}"}), 500
         

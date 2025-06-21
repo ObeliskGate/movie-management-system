@@ -75,7 +75,8 @@ if server_type == 'mysql':
                 )
                 
                 with temp_engine.connect() as conn:
-                    
+                    conn.execute(text(f"CREATE DATABASE IF NOT EXISTS {db_name} DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"))
+                    conn.execute(text(f"USE {db_name};"))
                     if execute_sql_file('movie_init.sql', conn):
                         print("数据库初始化完成")
                     else:

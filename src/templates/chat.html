@@ -218,7 +218,7 @@
                 if (data.status === 'success') {
                     enableUI();
                 } else {
-                    throw new Error(data.message || '初始化失败');
+                    throw new Error(data.message ? data.message : '初始化失败');
                 }
             })
             .catch(error => {
