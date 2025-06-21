@@ -5,3 +5,5 @@ openai
 pyautogen
 sqlalchemy
 cryptography
+pymssql
+pymysql
