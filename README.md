@@ -31,12 +31,14 @@ Fudan SDS 《数据库及实现》课程期末 Project.
 - 运行`python run.py`
 
 ### 注意事项
-- 我们的测试数据位于`movie_init.sql`中, 在 mysql 中没有`db_name`数据库时会自动执行该`.sql`文件, 否则会从. 若希望从头测试, 请`DROP DATABASE db_name`或设置一个和已有表`db_name`
+- 我们的测试数据位于`movie_init.sql`中, 在 mysql 中没有`db_name`数据库时会自动创建 DATABASE 并执行该文件初始数据. 若希望从头测试, 请`DROP DATABASE db_name`或设置一个和已有表完全不同的`db_name`
+    > `movie_init.sql`包括了我们的所有测试数据故不提供`sqldump`结果
 - `sqlite`通过本地的`filename`文件初始化, 需要自行通过`movie_init.sql`构造`.db`文件
-
+- agent 部分的配置以 qwen-plus api作为示例, 对其余 llm api 仅供参考
 
 ## 实现
-
+- 操作系统: 小组成员分别使用 Ubuntu 24.02 LTS 和 Windows 11 
+- 浏览器: 小组成员分别使用 Firefox, Chrome, Edge
 - 数据库： 在 mysql 上测试, 支持 sqlite
 - 编程语言：Python
 - Web 框架：Flask

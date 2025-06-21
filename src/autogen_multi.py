@@ -15,13 +15,7 @@ from src.init import get_db
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-config_list = [
-    {
-        "model": config.get('agent', 'model'),
-        "api_key": config.get('agent', 'api_key'),
-        "base_url": config.get('agent', 'base_url')
-    }
-]
+config_list = [dict(config.items('agent'))]
 
 # 创建SQL代理
 sql_agent = AssistantAgent(
